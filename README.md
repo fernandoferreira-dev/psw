@@ -1,3 +1,8 @@
+# Projeto PSW 
+## Tema: Discos
+#### Fernando Ferreira (2025123789) e Jaime Quaresma (2025144047)
+
+```
 root
   │
   ├── app.js
@@ -11,3 +16,4 @@ root
       ├── index.html
       ├── scripts
       └── styles
+```
