@@ -1,8 +1,8 @@
 USE discos;
 
-INSERT INTO user (user_email, user_nome, user_sobrenome) VALUES
-('maria.silva@email.com', 'Maria', 'Silva'),
-('joao.santos@email.com', 'João', 'Santos');
+INSERT INTO user (user_email, user_password, user_nome, user_sobrenome) VALUES
+('maria.silva@email.com', 'password123', 'Maria', 'Silva'),
+('joao.santos@email.com', 'segredo456', 'João', 'Santos');
 
 INSERT INTO artistas (artista) VALUES 
 ('Pink Floyd'),

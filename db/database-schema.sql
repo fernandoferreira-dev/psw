@@ -4,6 +4,7 @@ USE discos;
 CREATE TABLE user (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     user_email VARCHAR(255) NOT NULL UNIQUE,
+    user_password VARCHAR(255) NOT NULL,
     user_nome VARCHAR(30) NOT NULL,
     user_sobrenome VARCHAR(30) NOT NULL
 );
