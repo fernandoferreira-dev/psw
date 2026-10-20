@@ -1,0 +1,11 @@
+.content-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-submit {
+    background-color: rgb(24, 90, 90);
+    color: rgb(202, 202, 202);
+    
+}
+
