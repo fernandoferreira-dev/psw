@@ -5,9 +5,8 @@ const router = express.Router()
 
 router.post("/login", handlerUser.login)
 
-router.get("/register", (req, res) => {
-    res.send("register")
-})
+router.post("/register", handlerUser.register)
+
 /*
 router
     .route("/:userId")
