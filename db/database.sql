@@ -1,4 +1,4 @@
-USE discos;
+USE psw;
 
 INSERT INTO user (user_email, user_password, user_nome, user_sobrenome) VALUES
 ('maria.silva@email.com', 'password123', 'Maria', 'Silva'),
