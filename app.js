@@ -12,6 +12,8 @@ app.use(express.static("www",
     { "index": "index.html" },
 ));
 
+
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 });
