@@ -46,3 +46,24 @@ const register = (req, res) => {
     connection.end();
 }
 module.exports.register = register;
+
+const deleteUser = (req, res) => {
+    let connection = mysql.createConnection(options);
+
+    connection.connect();
+
+
+    let sql = "DELETE WHERE user_email = " + req.body.user_email
+    connection.query(sql, function (err) {
+        if (err) {
+            res.json({ "Message": "404" });
+        } else {
+            res.json({
+                "Message": "200",
+            });
+        }
+    });
+
+    connection.end();
+}
+module.exports.deleteUser = deleteUser;

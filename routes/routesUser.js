@@ -7,16 +7,11 @@ router.post("/login", handlerUser.login)
 
 router.post("/register", handlerUser.register)
 
-/*
 router
     .route("/:userId")
-    .get(userHandlers.getUser)
-    .put((req, res) => {
-        res.send(`Update ${req.params.userId}`)
-    })
-    .delete((req, res) => {
-        res.send(`Delete ${req.params.userId}`)
-    })
-*/
+    //.get(userHandlers.getUser)
+    //.put(userHandlers.updateUser)
+    .delete(userHandlers.deleteUser)
+
 
 module.exports = router
