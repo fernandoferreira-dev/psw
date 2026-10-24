@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | Discos</title>
+    <link rel="stylesheet" href="/styles/pages/main.css" type="text/css">
+  </head>
+  <body class="dashboard-page">
+    <header>
+      <h1 class="title">Discos</h1>
+      <div class="button-row">
+        <button class="button button-secondary" type="button" data-auth-view="login">Login</button>
+        <button class="button" type="button" data-auth-view="register">Register</button>
+      </div>
+    </header>
+    <main>
+      <section class="dashboard-intro">
+        <h2>Dashboard</h2>
+        <p>Coleção e ranking de utilizadores</p>
+      </section>
+      <div class="dashboard-stats" aria-label="Music collection statistics">
+        <section class="dashboard-stat">
+          <h2>Albuns</h2>
+          <p id="album-count">—</p>
+        </section>
+        <section class="dashboard-stat">
+          <h2>Artistas</h2>
+          <p id="artist-count">—</p>
+        </section>
+        <section class="dashboard-stat">
+          <h2>Temas</h2>
+          <p id="track-count">—</p>
+        </section>
+      </div>
+      <section class="ranking-section">
+        <h2>Ouvintes mais ativos</h2>
+        <p>Ranking de logins</p>
+        <p id="dashboard-message" role="status">A carregar...</p>
+        <div class="ranking-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Logins</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-list"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <p>Discos - Fernando Ferreira, Jaime Quaresma. 2026</p>
+    </footer>
+    <div id="auth-dialog-container"></div>
+    <script src="/scripts/auth-popup.js"></script>
+    <script src="/scripts/dashboard.js"></script>
+  </body>
+</html>

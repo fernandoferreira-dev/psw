@@ -1,0 +1,28 @@
+<dialog class="auth-dialog" id="auth-dialog" aria-labelledby="login-title">
+  <button class="dialog-close" type="button" aria-label="Close dialog">&times;</button>
+  <section class="auth-panel" data-auth-panel="login">
+    <h2 id="login-title">Login</h2>
+    <form class="auth-form">
+      <label for="login-email">Email</label>
+      <input id="login-email" name="email" type="email" autocomplete="email" required>
+      <label for="login-password">Password</label>
+      <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+      <button class="button auth-submit" type="submit">Login</button>
+    </form>
+  </section>
+  <section class="auth-panel" data-auth-panel="register" hidden>
+    <h2 id="register-title">Registrar</h2>
+    <form class="auth-form">
+      <label for="register-name">Nome</label>
+      <input id="register-name" name="name" type="text" autocomplete="given-name" required>
+      <label for="register-surname">Sobrenome</label>
+      <input id="register-surname" name="surname" type="text" autocomplete="family-name" required>
+      <label for="register-email">Email</label>
+      <input id="register-email" name="email" type="email" autocomplete="email" required>
+      <label for="register-password">Password</label>
+      <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+      <button class="button auth-submit" type="submit">Criar</button>
+    </form>
+  </section>
+  <p class="auth-notice" role="status" hidden></p>
+</dialog>

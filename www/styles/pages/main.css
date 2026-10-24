@@ -174,12 +174,84 @@ footer {
   text-align: center;
 }
 
-.body-homepage {
+.startbutton {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
 }
 
+.dashboard-page {
+  min-height: 100vh;
+}
 
+.dashboard-page main {
+  width: min(100%, 1000px);
+  flex: 1;
+}
+
+.dashboard-page footer {
+  position: static;
+}
+
+.dashboard-intro {
+  margin-bottom: 18px;
+}
+
+.dashboard-intro h2 {
+  margin-bottom: 8px;
+}
+
+.dashboard-intro p,
+.ranking-section > p {
+  color: #526168;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.dashboard-stat {
+  margin-bottom: 0;
+}
+
+.dashboard-stat h2 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.dashboard-stat p {
+  margin: 0;
+  color: #058457;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.ranking-table-wrap {
+  overflow-x: auto;
+}
+
+.ranking-section table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ranking-section th,
+.ranking-section td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e8edf4;
+}
+
+.ranking-section th {
+  color: #526168;
+  font-size: 0.9rem;
+}
+
+.ranking-section td:last-child,
+.ranking-section th:last-child {
+  text-align: right;
+}
 
 @media (max-width: 480px) {
   header {
@@ -196,5 +268,10 @@ footer {
 
   .auth-dialog {
     padding: 28px 22px;
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 }

@@ -1,11 +1,13 @@
-const express = require("express")
+const express = require("express");
 const handlerUser = require("../scripts/handlerUser");
-
-const router = express.Router()
+const handlerDashboard = require("../scripts/handlerDashboard");
+const router = express.Router();
 
 router.post("/login", handlerUser.login)
 
 router.post("/register", handlerUser.register)
+
+router.get("/dashboard", handlerDashboard.getDashboard)
 
 //router
 //    .route("/:userId")

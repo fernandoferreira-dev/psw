@@ -29,6 +29,11 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "parametros invalidos." });
         }
 
+        await connection.execute(
+            "UPDATE `user` SET login_count = login_count + 1 WHERE user_id = ?",
+            [users[0].user_id],
+        );
+
         // Rodar o ID da sessão depois de autenticar para evitar a persistencia da sessão.
         await new Promise((resolve, reject) => {
             req.session.regenerate((error) =>
