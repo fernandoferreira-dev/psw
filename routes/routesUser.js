@@ -13,5 +13,4 @@ router
     //.put(userHandlers.updateUser)
     .delete(userHandlers.deleteUser)
 
-
 module.exports = router

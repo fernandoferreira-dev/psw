@@ -2,7 +2,7 @@
 
 const mysql = require("mysql2/promise");
 const options = require("./options.json");
-// Reutilizar as mesmas conexões ao inves de começar outra 
+// Reutilizar as mesmas conexões ao inves de tar sempre a começar outra
 const connection = mysql.createPool(options);
 
 const login = async (req, res) => {
@@ -21,7 +21,6 @@ const login = async (req, res) => {
         if (users.length === 0) {
             return res.status(401).json({ message: "parametros invalidos." });
         }
-
 
         // Rodar o ID da sessão depois de autenticar para evitar a persistencia da sessão.
         await new Promise((resolve, reject) => {
@@ -72,23 +71,33 @@ const register = async (req, res) => {
 }
 module.exports.register = register; 
 
-const deleteUser = (req, res) => {
-    let connection = mysql.createConnection(options);
+const deleteUser = async (req, res) => {
+    const userId = req.session?.userId;
+    if (!userId) {
+        return res.status(401).json({ message: "Faça login para eliminar a conta." });
+    }
 
-    connection.connect();
-
-
-    let sql = "DELETE WHERE user_email = " + req.body.user_email
-    connection.query(sql, function (err) {
-        if (err) {
-            res.json({ "Message": "404" });
-        } else {
-            res.json({
-                "Message": "200",
-            });
+    try {
+        // Apaga a conta que está autenticada.
+        const [result] = await connection.execute(
+            "DELETE FROM `user` WHERE user_id = ?",
+            [userId],   //Desestruturação do array. se nao for assim, o result estaria undefined.
+        );
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "A conta não foi encontrada." });
         }
-    });
 
-    connection.end();
+        // Dar logout ao user apos ele apagar a conta.
+        await new Promise((resolve, reject) => {
+            req.session.destroy((error) => error ? reject(error) : resolve());
+        });
+
+        res.clearCookie("connect.sid");     // connect.sid é o ID da sessão do utilizador. a linha serve para dar clear a essa cookie
+        return res.json({ message: "Conta apagada." });
+    } catch (error) {
+        console.error("Account deletion request failed:", error);
+        return res.status(500).json({ message: "Erro 500 (erro do servidor), tente novamente mais tarde." });
+    }
 }
 module.exports.deleteUser = deleteUser;
