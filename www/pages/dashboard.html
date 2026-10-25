@@ -10,8 +10,9 @@
     <header>
       <h1 class="title">Discos</h1>
       <div class="button-row">
-        <!--<button class="button button-secondary" type="button" data-auth-view="login">Login</button>
-        <button class="button" type="button" data-auth-view="register">Register</button>--> 
+        <button class="button button-danger" id="delete-account-button" type="button">
+          Eliminar conta
+        </button>
       </div>
     </header>
     <main>
@@ -64,6 +65,19 @@
     <footer>
       <p>Discos - Fernando Ferreira, Jaime Quaresma. 2026</p>
     </footer>
+    <dialog class="delete-account-dialog" id="delete-account-dialog" aria-labelledby="delete-account-title">
+      <h2 id="delete-account-title">Eliminar conta?</h2>
+      <p>Esta ação é permanente. A sua conta será eliminada e não poderá ser recuperada.</p>
+      <p class="delete-account-message" id="delete-account-message" role="status" aria-live="polite"></p>
+      <div class="delete-account-actions">
+        <button class="button button-secondary" id="cancel-account-deletion" type="button">
+          Cancelar
+        </button>
+        <button class="button button-danger" id="confirm-account-deletion" type="button">
+          Eliminar conta
+        </button>
+      </div>
+    </dialog>
     <div id="auth-dialog-container"></div>
     <script src="/scripts/auth-popup.js"></script>
     <script src="/scripts/dashboard.js"></script>

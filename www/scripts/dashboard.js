@@ -1,3 +1,4 @@
+//dashboard
 const albumCount = document.querySelector("#album-count");
 const artistCount = document.querySelector("#artist-count");
 const trackCount = document.querySelector("#track-count");
@@ -6,8 +7,16 @@ const artistList = document.querySelector("#artist-list");
 const rankingList = document.querySelector("#ranking-list");
 const dashboardMessage = document.querySelector("#dashboard-message");
 
+//conta
+const deleteAccountButton = document.querySelector("#delete-account-button");
+const deleteAccountDialog = document.querySelector("#delete-account-dialog");
+const cancelAccountDeletion = document.querySelector("#cancel-account-deletion");
+const confirmAccountDeletion = document.querySelector("#confirm-account-deletion");
+const deleteAccountMessage = document.querySelector("#delete-account-message");
+
 const renderCollection = (list, items, emptyMessage) => {
   list.replaceChildren();
+  //popular a tabela dinamicamente
   if (items.length === 0) {
     const item = document.createElement("li");
     item.textContent = emptyMessage;
@@ -24,7 +33,7 @@ const renderCollection = (list, items, emptyMessage) => {
 
 const loadDashboard = async () => {
   try {
-    const response = await fetch("/users/dashboard");
+    const response = await fetch("/users/dashboard"); //função para chamar o dashboard
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Não foi possivel carregar o dashboard.");
@@ -39,6 +48,7 @@ const loadDashboard = async () => {
 
     rankingList.replaceChildren();
     ranking.forEach((user, index) => {
+      //tabela de utilizadores
       const row = document.createElement("tr");
       const rankCell = document.createElement("td");
       const nameCell = document.createElement("td");
@@ -59,5 +69,42 @@ const loadDashboard = async () => {
       error.message || "Não foi possivel realizar o pedido.";
   }
 };
+
+deleteAccountButton.addEventListener("click", () => {
+  deleteAccountMessage.textContent = "";
+  deleteAccountDialog.showModal();
+});
+
+cancelAccountDeletion.addEventListener("click", () => {
+  deleteAccountDialog.close();
+});
+
+//popup de apagar a conta
+deleteAccountDialog.addEventListener("click", (event) => {
+  if (event.target === deleteAccountDialog) {
+    deleteAccountDialog.close();
+  }
+});
+
+confirmAccountDeletion.addEventListener("click", async () => {
+  confirmAccountDeletion.disabled = true;
+  cancelAccountDeletion.disabled = true;
+  deleteAccountMessage.textContent = "A eliminar conta...";
+
+  try {
+    const response = await fetch("/users/delete", { method: "DELETE" });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Não foi possível eliminar a conta.");
+    }
+
+    window.location.assign("/");
+  } catch (error) {
+    deleteAccountMessage.textContent =
+      error.message || "Não foi possível realizar o pedido.";
+    confirmAccountDeletion.disabled = false;
+    cancelAccountDeletion.disabled = false;
+  }
+});
 
 loadDashboard();
