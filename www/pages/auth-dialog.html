@@ -8,6 +8,7 @@
       <label for="login-password">Password</label>
       <input id="login-password" name="password" type="password" autocomplete="current-password" required>
       <button class="button auth-submit" type="submit">Login</button>
+      <p class="auth-switch">Ainda não tem uma conta? <button type="button" data-auth-view="register">Registrar</button></p>
     </form>
   </section>
   <section class="auth-panel" data-auth-panel="register" hidden>
@@ -22,6 +23,7 @@
       <label for="register-password">Password</label>
       <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8" required>
       <button class="button auth-submit" type="submit">Criar</button>
+      <p class="auth-switch">Já tem uma conta? <button type="button" data-auth-view="login">Login</button></p>
     </form>
   </section>
   <p class="auth-notice" role="status" hidden></p>
