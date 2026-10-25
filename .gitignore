@@ -4,3 +4,6 @@
 
 # Packages
 node_modules/
+
+# Credentials
+scripts/options.json
