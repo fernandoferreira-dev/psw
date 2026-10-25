@@ -1,21 +1,41 @@
 const albumCount = document.querySelector("#album-count");
 const artistCount = document.querySelector("#artist-count");
 const trackCount = document.querySelector("#track-count");
+const albumList = document.querySelector("#album-list");
+const artistList = document.querySelector("#artist-list");
 const rankingList = document.querySelector("#ranking-list");
 const dashboardMessage = document.querySelector("#dashboard-message");
 
-fetch("/users/dashboard")
-  .then(async (response) => {
+const renderCollection = (list, items, emptyMessage) => {
+  list.replaceChildren();
+  if (items.length === 0) {
+    const item = document.createElement("li");
+    item.textContent = emptyMessage;
+    list.append(item);
+    return;
+  }
+
+  items.forEach(({ name }) => {
+    const item = document.createElement("li");
+    item.textContent = name;
+    list.append(item);
+  });
+};
+
+const loadDashboard = async () => {
+  try {
+    const response = await fetch("/users/dashboard");
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Não foi possivel carregar o dashboard.");
     }
-    return data;
-  })
-  .then(({ stats, ranking }) => {
+
+    const { stats, albums, artists, ranking } = data;
     albumCount.textContent = stats.albums.toLocaleString();
     artistCount.textContent = stats.artists.toLocaleString();
     trackCount.textContent = stats.tracks.toLocaleString();
+    renderCollection(albumList, albums, "Ainda não existem albuns.");
+    renderCollection(artistList, artists, "Ainda não existem artistas.");
 
     rankingList.replaceChildren();
     ranking.forEach((user, index) => {
@@ -34,8 +54,10 @@ fetch("/users/dashboard")
     dashboardMessage.textContent = ranking.length
       ? ""
       : "Ainda não há logins nenhuns.";
-  })
-  .catch((error) => {
+  } catch (error) {
     dashboardMessage.textContent =
       error.message || "Não foi possivel realizar o pedido.";
-  });
+  }
+};
+
+loadDashboard();

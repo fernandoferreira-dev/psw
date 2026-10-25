@@ -209,6 +209,7 @@ footer {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+  padding: 10px;
 }
 
 .dashboard-stat {
@@ -225,6 +226,23 @@ footer {
   color: #058457;
   font-size: 2rem;
   font-weight: 700;
+}
+
+.dashboard-collections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.dashboard-collection-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.dashboard-collection-list li {
+  padding-left: 4px;
 }
 
 .ranking-table-wrap {
@@ -271,6 +289,11 @@ footer {
   }
 
   .dashboard-stats {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .dashboard-collections {
     grid-template-columns: 1fr;
     gap: 0;
   }

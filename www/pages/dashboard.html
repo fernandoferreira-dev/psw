@@ -21,7 +21,7 @@
       </section>
       <div class="dashboard-stats" aria-label="Music collection statistics">
         <section class="dashboard-stat">
-          <h2>Albuns</h2>
+          <h2>Álbuns</h2>
           <p id="album-count">—</p>
         </section>
         <section class="dashboard-stat">
@@ -33,10 +33,20 @@
           <p id="track-count">—</p>
         </section>
       </div>
+      <div class="dashboard-collections">
+        <section class="dashboard-collection">
+          <h2>Álbuns</h2>
+          <ol id="album-list" class="dashboard-collection-list"></ol>
+        </section>
+        <section class="dashboard-collection">
+          <h2>Artistas</h2>
+          <ol id="artist-list" class="dashboard-collection-list"></ol>
+        </section>
+      </div>
       <section class="ranking-section">
         <h2>Ouvintes mais ativos</h2>
         <p>Ranking de logins</p>
-        <p id="dashboard-message" role="status">A carregar...</p>
+        <p id="dashboard-message" role="status" aria-live="polite">A carregar...</p>
         <div class="ranking-table-wrap">
           <table>
             <thead>
