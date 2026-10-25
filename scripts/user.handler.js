@@ -50,12 +50,10 @@ const login = async (req, res) => {
         return res.json({ message: "Login sucedido." });
     } catch (error) {
         console.error("Login request failed:", error);
-        return res
-            .status(500)
-            .json({
-                message:
-                    "Erro 500 (internal server error - erro do servidor), tente denovo mais tarde.",
-            });
+        return res.status(500).json({
+            message:
+                "Erro 500 (internal server error - erro do servidor), tente denovo mais tarde.",
+        });
     }
 };
 module.exports.login = login;
@@ -77,12 +75,10 @@ const register = async (req, res) => {
         !surname.trim() ||
         surname.trim().length > 30
     ) {
-        return res
-            .status(400)
-            .json({
-                message:
-                    "Introduza valores validos, uma password de 8 carateres é obrigatoria.",
-            });
+        return res.status(400).json({
+            message:
+                "Introduza valores validos, uma password de 8 carateres é obrigatoria.",
+        });
     }
 
     try {
@@ -99,15 +95,76 @@ const register = async (req, res) => {
                 .json({ message: "Uma conta com esse email já existe." });
         }
         console.error("Registration request failed:", error);
-        return res
-            .status(500)
-            .json({
-                message:
-                    "Erro 500 (internal server error - erro do servidor), tente denovo mais tarde.",
-            });
+        return res.status(500).json({
+            message:
+                "Erro 500 (internal server error - erro do servidor), tente denovo mais tarde.",
+        });
     }
 };
 module.exports.register = register;
+
+const setFavorite = async (req, res) => {
+    const userId = req.session?.userId;
+    
+    if (!userId) {
+        return res
+            .status(401)
+            .json({ message: "Faça login para guardar favoritos." });
+    }
+
+    const { type, id } = req.body ?? {};
+    const favoriteTypes = {
+        album: { column: "fav_album", table: "discos", idColumn: "disco_id" },
+        artist: {
+            column: "fav_artist",
+            table: "artistas",
+            idColumn: "artista_id",
+        },
+    };
+    const favorite = ["album", "artist"].includes(type)
+        ? favoriteTypes[type]
+        : null;
+    if (!favorite || !Number.isSafeInteger(id) || id < 1) {
+        return res.status(400).json({ message: "Favorito inválido." });
+    }
+
+    try {
+        const [items] = await connection.execute(
+            `SELECT ${favorite.idColumn} FROM ${favorite.table} WHERE ${favorite.idColumn} = ?`,
+            [id],
+        );
+        if (items.length === 0) {
+            return res
+                .status(404)
+                .json({ message: "O item selecionado não existe." });
+        }
+
+        const [result] = await connection.execute(
+            `UPDATE \`user\` SET ${favorite.column} = ? WHERE user_id = ?`,
+            [id, userId],
+        );
+        if (result.affectedRows === 0) {
+            const [users] = await connection.execute(
+                "SELECT user_id FROM `user` WHERE user_id = ?",
+                [userId],
+            );
+            if (users.length === 0) {
+                return res
+                    .status(401)
+                    .json({
+                        message: "A sessão expirou. Faça login novamente.",
+                    });
+            }
+        }
+        return res.json({ message: "Favorito guardado.", type, id });
+    } catch (error) {
+        console.error("Favorite update failed:", error);
+        return res
+            .status(500)
+            .json({ message: "Não foi possível guardar o favorito." });
+    }
+};
+module.exports.setFavorite = setFavorite;
 
 const deleteUser = async (req, res) => {
     const userId = req.session?.userId;
@@ -139,12 +196,9 @@ const deleteUser = async (req, res) => {
         return res.json({ message: "Conta apagada." });
     } catch (error) {
         console.error("Account deletion request failed:", error);
-        return res
-            .status(500)
-            .json({
-                message:
-                    "Erro 500 (erro do servidor), tente novamente mais tarde.",
-            });
+        return res.status(500).json({
+            message: "Erro 500 (erro do servidor), tente novamente mais tarde.",
+        });
     }
 };
 module.exports.deleteUser = deleteUser;

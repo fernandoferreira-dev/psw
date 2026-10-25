@@ -7,7 +7,9 @@ CREATE TABLE user (
     user_password VARCHAR(255) NOT NULL,
     user_nome VARCHAR(30) NOT NULL,
     user_sobrenome VARCHAR(30) NOT NULL,
-    login_count INT NOT NULL DEFAULT 0
+    login_count INT NOT NULL DEFAULT 0,
+    fav_artist INT NULL,
+    fav_album INT NULL
 );
 
 CREATE TABLE discos (

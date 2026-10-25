@@ -296,7 +296,21 @@ footer {
 }
 
 .dashboard-collection-list li {
-  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.button-favorite {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  font-size: 0.875rem;
+}
+
+#favorite-message {
+  min-height: 1.5em;
+  color: #526168;
 }
 
 .ranking-table-wrap {
@@ -351,6 +365,7 @@ footer {
     grid-template-columns: 1fr;
     gap: 0;
   }
+
 }
 
 .log-out {

@@ -6,6 +6,7 @@ const albumList = document.querySelector("#album-list");
 const artistList = document.querySelector("#artist-list");
 const rankingList = document.querySelector("#ranking-list");
 const dashboardMessage = document.querySelector("#dashboard-message");
+const favoriteMessage = document.querySelector("#favorite-message");
 
 //conta
 const deleteAccountButton = document.querySelector("#delete-account-button");
@@ -13,10 +14,11 @@ const deleteAccountDialog = document.querySelector("#delete-account-dialog");
 const cancelAccountDeletion = document.querySelector("#cancel-account-deletion");
 const confirmAccountDeletion = document.querySelector("#confirm-account-deletion");
 const deleteAccountMessage = document.querySelector("#delete-account-message");
+let dashboardData;
+const pendingFavorites = new Set();
 
-const renderCollection = (list, items, emptyMessage) => {
+const renderCollection = (list, items, emptyMessage, type, favoriteId) => {
   list.replaceChildren();
-  //popular a tabela dinamicamente
   if (items.length === 0) {
     const item = document.createElement("li");
     item.textContent = emptyMessage;
@@ -24,27 +26,97 @@ const renderCollection = (list, items, emptyMessage) => {
     return;
   }
 
-  items.forEach(({ name }) => {
+  items.forEach(({ id, name }) => {
     const item = document.createElement("li");
-    item.textContent = name;
+    const label = document.createElement("span");
+    const button = document.createElement("button");
+    const isFavorite = favoriteId != null && Number(favoriteId) === Number(id);
+
+    label.textContent = name;
+    button.className = "button button-favorite";
+    button.type = "button";
+    button.textContent = isFavorite ? "Favorito" : "Favoritar";
+    button.disabled = pendingFavorites.has(type) || favoriteId != null;
+    button.setAttribute("aria-pressed", String(isFavorite));
+    button.setAttribute("aria-label", `${button.textContent}: ${name}`);
+    button.addEventListener("click", () => saveFavorite(type, id));
+
+    item.append(label, button);
     list.append(item);
   });
 };
 
+const renderCollections = () => {
+  const { albums, artists, favorites } = dashboardData;
+  renderCollection(
+    albumList,
+    albums,
+    "Ainda não existem albuns.",
+    "album",
+    favorites.album,
+  );
+  renderCollection(
+    artistList,
+    artists,
+    "Ainda não existem artistas.",
+    "artist",
+    favorites.artist,
+  );
+};
+
+const saveFavorite = async (type, id) => {
+  pendingFavorites.add(type);
+  renderCollections();
+  favoriteMessage.textContent = "A guardar favorito...";
+
+  try {
+    const response = await fetch("/users/favorites", {
+      method: "PUT",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type, id: Number(id) }),
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "Não foi possível guardar o favorito.");
+    }
+
+    dashboardData.favorites[type] = result.id;
+    favoriteMessage.textContent = result.message;
+  } catch (error) {
+    favoriteMessage.textContent =
+      error.message || "Não foi possível guardar o favorito.";
+  } finally {
+    pendingFavorites.delete(type);
+    renderCollections();
+  }
+};
+
 const loadDashboard = async () => {
   try {
-    const response = await fetch("/users/dashboard"); //função para chamar o dashboard
+    const response = await fetch("/users/dashboard", {
+      credentials: "same-origin",
+    }); //função para chamar o dashboard
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Não foi possivel carregar o dashboard.");
     }
 
-    const { stats, albums, artists, ranking } = data;
+    const { stats, ranking } = data;
+    dashboardData = {
+      ...data,
+      albums: Array.isArray(data.albums) ? data.albums : [],
+      artists: Array.isArray(data.artists) ? data.artists : [],
+      favorites: {
+        album: data.favorites?.album ?? null,
+        artist: data.favorites?.artist ?? null,
+      },
+    };
+    favoriteMessage.textContent = "";
     albumCount.textContent = stats.albums.toLocaleString();
     artistCount.textContent = stats.artists.toLocaleString();
     trackCount.textContent = stats.tracks.toLocaleString();
-    renderCollection(albumList, albums, "Ainda não existem albuns.");
-    renderCollection(artistList, artists, "Ainda não existem artistas.");
+    renderCollections();
 
     rankingList.replaceChildren();
     ranking.forEach((user, index) => {

@@ -7,6 +7,8 @@ router.post("/login", handlerUser.login)
 
 router.post("/register", handlerUser.register)
 
+router.put("/favorites", handlerUser.setFavorite)
+
 router.delete("/delete", handlerUser.deleteUser)
 
 router.get("/dashboard", handlerDashboard.getDashboard)
