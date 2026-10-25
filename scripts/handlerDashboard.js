@@ -1,3 +1,7 @@
+const mysql = require("mysql2/promise");
+const options = require("./options.json");
+const connection = mysql.createPool(options);
+
 const getDashboard = async (req, res) => {
     try {
         const [[albumCount]] = await connection.query(
