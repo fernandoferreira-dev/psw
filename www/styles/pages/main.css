@@ -1,3 +1,5 @@
+
+
 * {
   box-sizing: border-box;
 }
@@ -349,4 +351,13 @@ footer {
     grid-template-columns: 1fr;
     gap: 0;
   }
+}
+
+.log-out {
+  background: #ee0808;
+  
+}
+.log-out:hover {
+  background: #b55454;
+  
 }
