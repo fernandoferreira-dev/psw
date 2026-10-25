@@ -1,13 +1,8 @@
-<<<<<<< HEAD
-const mysql = require("mysql2/promise");
-const options = require("./options.json");
-=======
 "use strict";
 
 const mysql = require("mysql2/promise");
 const options = require("./options.json");
 // Reutilizar as mesmas conexões ao inves de tar sempre a começar outra
->>>>>>> ac5d13f (add: libs to dashboard handler)
 const connection = mysql.createPool(options);
 
 const getDashboard = async (req, res) => {
