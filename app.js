@@ -9,7 +9,7 @@ if (!sessionSecret) {
     throw new Error("SESSION_SECRET has to be set before starting the server");
 }
 
-const routesUser = require("./routes/routesUser")
+const routesUser = require("./routes/user.routes")
 
 app.use(express.json());
 app.use(session({

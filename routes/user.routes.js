@@ -1,7 +1,7 @@
-const express = require("express");
-const handlerUser = require("../scripts/handlerUser");
-const handlerDashboard = require("../scripts/handlerDashboard");
-const router = express.Router();
+const express = require("express")
+const handlerUser = require("../scripts/user.handler");
+
+const router = express.Router()
 
 router.post("/login", handlerUser.login)
 
