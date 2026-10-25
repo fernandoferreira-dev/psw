@@ -1,7 +1,26 @@
 {
-  "dependencies": {
-    "express": "^5.3.0",
-    "express-session": "^1.19.0",
-    "mysql2": "^3.24.6"
-  }
+    "name": "psw",
+    "version": "1.0.0",
+    "description": "``` ├── app.js ├── db │   ├── database-schema.sql │   └── database.sql ├── package.json ├── package-lock.json ├── README.md ├── scripts │   ├── options.json │   └── request-handlers.js └── www     ├── images     ├── index.html     ├── pages     │   ├── login.html     │   └── register.html     ├── scripts     └── styles         ├── fonts.css         ├── pages         │   ├── login.css         │   └── main.css         └── styles.css ```",
+    "homepage": "https://github.com/fernandoferreira-dev/psw#readme",
+    "bugs": {
+        "url": "https://github.com/fernandoferreira-dev/psw/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/fernandoferreira-dev/psw.git"
+    },
+    "license": "ISC",
+    "author": "",
+    "main": "app.js",
+    "scripts": {
+        "dev": "export SESSION_SECRET='$(openssl rand -base64 32)'; node app.js;",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "express": "^5.3.0",
+        "express-session": "^1.19.0",
+        "mysql2": "^3.24.6"
+    },
+    "devDependencies": {}
 }
