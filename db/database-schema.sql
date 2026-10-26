@@ -8,18 +8,8 @@ CREATE TABLE user (
     user_nome VARCHAR(30) NOT NULL,
     user_sobrenome VARCHAR(30) NOT NULL,
     login_count INT NOT NULL DEFAULT 0,
-    fav_artist INT NULL,
-    fav_album INT NULL
-);
-
-CREATE TABLE discos (
-    disco_id INT PRIMARY KEY AUTO_INCREMENT,
-    disco_nome VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE artistas (
-    artista_id INT PRIMARY KEY AUTO_INCREMENT,
-    artista VARCHAR(255) NOT NULL
+    user_favAlbum INT DEFAULT "NAO DEFINIDO",
+    FOREIGN KEY (musica_id) REFERENCES musicas(musica_id)
 );
 
 CREATE TABLE musicas (
