@@ -25,14 +25,9 @@ CREATE TABLE artistas (
 CREATE TABLE musicas (
     musica_id INT PRIMARY KEY AUTO_INCREMENT,
     musica_nome VARCHAR(255) NOT NULL,
-    disco_id INT,
-    FOREIGN KEY (disco_id) REFERENCES discos(disco_id)
-);
-
-CREATE TABLE discos_artistas (
-    discos_artistas_id INT PRIMARY KEY AUTO_INCREMENT,
-    disco_id INT NOT NULL,
-    artista_id INT NOT NULL,
-    FOREIGN KEY (disco_id) REFERENCES discos(disco_id),
-    FOREIGN KEY (artista_id) REFERENCES artistas(artista_id)
+    musica_artista VARCHAR(255) NOT NULL,
+    musica_album VARCHAR(255) NOT NULL DEFAULT "Single",
+    musica_dataLancamento VARCHAR(255) NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
 );

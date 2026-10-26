@@ -1,38 +1,23 @@
-USE psw;
+INSERT INTO user (user_email, user_password, user_nome, user_sobrenome, login_count, user_fav_album) 
+VALUES 
+    ('joao.silva@email.com', '1234', 'João', 'Silva', 5, 'The Dark Side of the Moon'),
+    ('maria.santos@email.com', '1234', 'Maria', 'Santos', 12, 'Master of Puppets'),
+    ('ana.costa@email.com', '1234', 'Ana', 'Costa', 2, 'American Idiot');
 
-INSERT INTO user (user_email, user_password, user_nome, user_sobrenome) VALUES
-('maria.silva@email.com', 'password123', 'Maria', 'Silva'),
-('joao.santos@email.com', 'segredo456', 'João', 'Santos');
-
-INSERT INTO artistas (artista) VALUES 
-('Pink Floyd'),
-('Iron Maiden'),
-('System of a Down'),
-('Korn');
-
-INSERT INTO discos (disco_nome) VALUES 
-('The Dark Side of the Moon'),
-('The Number of the Beast'),
-('Toxicity'),
-('Follow the Leader');
-
-INSERT INTO discos_artistas (disco_id, artista_id) VALUES 
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4);
-
-INSERT INTO musicas (musica_nome, disco_id) VALUES 
-('Time', 1),
-('Money', 1),
-('Run to the Hills', 2),
-('Hallowed Be Thy Name', 2),
-('Chop Suey!', 3),
-('Toxicity', 3),
-('Freak on a Leash', 4),
-('Got the Life', 4),
--- Singles
-('Arnold Layne', NULL),
-('Women in Uniform', NULL),
-('Shame', NULL),
-('I Can Remember', NULL);
+INSERT INTO musicas (musica_nome, musica_artista, musica_album, musica_data_lancamento, user_id) 
+VALUES 
+    -- Korn
+    ('Freak on a Leash', 'Korn', 'Follow the Leader', '1998-08-18', 1),
+    ('Blind', 'Korn', 'Korn', '1994-10-11', 1),
+    
+    -- Pink Floyd
+    ('Comfortably Numb', 'Pink Floyd', 'The Wall', '1979-11-30', 1),
+    ('Wish You Were Here', 'Pink Floyd', 'Wish You Were Here', '1975-09-12', 3),
+    
+    -- Metallica
+    ('Master of Puppets', 'Metallica', 'Master of Puppets', '1986-03-03', 2),
+    ('Enter Sandman', 'Metallica', 'Metallica', '1991-08-12', 2),
+    
+    -- Green Day
+    ('Basket Case', 'Green Day', 'Dookie', '1994-02-01', 3),
+    ('American Idiot', 'Green Day', 'American Idiot', '2004-09-21', 3);
