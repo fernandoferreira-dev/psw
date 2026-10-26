@@ -15,8 +15,8 @@ router.get("/dashboard", handlerDashboard.getDashboard)
 
 //router
 //    .route("/:userId")
-//    //.get(userHandlers.getUser)
-//    //.put(userHandlers.updateUser)
+//    .get(userHandlers.getUser)
+//    .put(userHandlers.updateUser)
 //    .delete(userHandlers.deleteUser)
 
 module.exports = router

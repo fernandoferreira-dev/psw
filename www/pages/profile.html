@@ -1,21 +1,44 @@
-<dialog>
-      <button class="dialog-close" type="button" aria-label="Close dialog">&times;</button>
-      <section class="auth-panel" data-auth-panel>
+<!DOCTYPE html>
+<html lang="en">
 
-        <label for="update-name">Nome:</label>
-        <input type="text">
-        
-        
-        <label for="update-sobrenome">Sobrenome:</label>
-        <input type="text">
-                
-        <label for="update-email">Email:</label>
-        <input type="text">
-                
-        <label for="update-password">Password:</label>
-        <input type="text">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
 
-      </section>
+<style>
+    input {
+        border: none;
+        padding: 2px;
+    }
 
-      <button class="button">Submeter</button>
-</dialog>
+    input:focus {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <header>
+        <h1 class="title">Discos</h1>
+        <div class="button-row">
+            <button class="button button-danger" id="delete-account-button" type="button">
+                Eliminar conta
+            </button>
+        </div>
+        <button class="button" id="profile">Perfil</button>
+        <button class="log-out button" id="logOut">Log Out</button>
+    </header>
+    ff
+
+    <input type="text" placeholder="Nome">
+    <input type="text" placeholder="Sobrenome">
+    <input type="email" placeholder="Email">
+    <input type="password" placeholder="Palavra-passe">
+
+    </section>
+
+    <button class="button">Submeter</button>
+</body>
+
+</html>
