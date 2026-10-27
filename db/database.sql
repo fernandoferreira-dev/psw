@@ -1,9 +1,10 @@
-INSERT INTO user (user_email, user_password, user_nome, user_sobrenome, login_count, user_fav_album) 
+INSERT INTO user (user_email, user_password, user_nome, user_sobrenome, login_count, user_fav_musica) 
 VALUES 
-    ('joao.silva@email.com', '1234', 'João', 'Silva', 5, 'The Dark Side of the Moon'),
-    ('maria.santos@email.com', '1234', 'Maria', 'Santos', 12, 'Master of Puppets'),
-    ('ana.costa@email.com', '1234', 'Ana', 'Costa', 2, 'American Idiot');
+    ('joao.silva@email.com', '1234', 'João', 'Silva', 5, 2),
+    ('maria.santos@email.com', '1234', 'Maria', 'Santos', 12, 1),
+    ('ana.costa@email.com', '1234', 'Ana', 'Costa', 2, NULL);
 
+-- 5. Inserir as músicas associadas aos utilizadores
 INSERT INTO musicas (musica_nome, musica_artista, musica_album, musica_data_lancamento, user_id) 
 VALUES 
     -- Korn
