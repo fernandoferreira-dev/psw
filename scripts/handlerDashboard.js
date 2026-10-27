@@ -3,7 +3,7 @@
 const mysql = require("mysql2/promise");
 const options = require("./options.json");
 // Reutilizar as mesmas conexões ao inves de tar sempre a começar outra
-const connection = mysql.createPool(options);
+const connection = mysql.createPool(options.database);
 
 const getDashboard = async (req, res) => {
     try {

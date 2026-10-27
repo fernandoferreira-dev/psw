@@ -2,7 +2,7 @@
 
 const mysql = require("mysql2/promise");
 const options = require("./options.json");
-const database = mysql.createPool(options);
+const database = mysql.createPool(options.database);
 
 function getAllUsers(req, res) {
     let sql = mysql.format(
