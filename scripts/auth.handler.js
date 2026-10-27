@@ -2,7 +2,9 @@
 
 const mysql = require("mysql2/promise");
 const options = require("./options.json");
-const database = mysql.createPool(options);
+const database = mysql.createPool(options.database);
+const emailRegEx = options.RegEx.email;
+const nameRegEx = options.RegEx.names;
 
 
 async function register(req, res) {
@@ -13,7 +15,7 @@ async function register(req, res) {
     }
 
     const cleanEmail = email.trim().toLowerCase()
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    if (!emailRegEx.test(cleanEmail)) {
         return res.status(400).json({ error: "Endereço de email inválido. " })
     }
 
@@ -22,7 +24,7 @@ async function register(req, res) {
     }
 
     const cleanFirstName = firstName.trim(), cleanLastName = lastName.trim()
-    if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(cleanFirstName || cleanLastName)) {
+    if (!nameRegEx.test(cleanFirstName || cleanLastName)) {
         return { valid: false, error: "O nome contém caracteres inválidos." };
     }
 
@@ -55,7 +57,7 @@ async function login(req, res) {
     }
 
     const cleanEmail = email.trim().toLowerCase()
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    if (!emailRegEx.test(cleanEmail)) {
         return res.status(400).json({ error: "Endereço de email inválido. " })
     }
 
