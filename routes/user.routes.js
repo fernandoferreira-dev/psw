@@ -1,23 +1,15 @@
 const express = require("express");
 
+const userHandler = require("../scripts/user.handler.js");
 const router = express.Router();
 
+router.get("/", userHandler.getAllUsers)
 
-const handlerUser = require("../scripts/user.handler");
-const handlerDashboard = require("../scripts/handlerDashboard");
-
-// Gestão da Própria Conta (Lê req.session.userId internamente)
-//router
-//    .route("/me")
-//.get(handlerUser.getProfile)
-//.put(handlerUser.updateProfile)
-//.patch(handlerUser.patchProfile)
-//.delete(handlerUser.deleteAccount);
-
-// Favoritos do Utilizador Autenticado
-router.patch("/me/favorites", handlerUser.setFavorite);
-
-// Dashboard (Recurso isolado)
-router.get("/dashboard", handlerDashboard.getDashboard);
+router
+    .route("/me")
+    .get(userHandler.getProfile)
+    .put(userHandler.updateProfile)
+    .patch(userHandler.patchProfile)
+    .delete(userHandler.deleteProfile);
 
 module.exports = router;
