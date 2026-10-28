@@ -9,7 +9,7 @@ function getAllUsers(req, res) {
         "SELECT user_email, user_password, user_nome, user_sobrenome, login_count, user_fav_musica from users",
     );
 
-    database.querry(sql, function (err, rows) {
+    database.query(sql, function (err, rows) {
         if (err) {
             res.json(errorMessage);
         } else {
@@ -23,7 +23,7 @@ function getProfile(req, res) {
 
     let sql = mysql.format("SELECT * FROM user WHERE user_id=?", [userId]);
 
-    database.querry(sql, function (err, rows) {
+    database.query(sql, function (err, rows) {
         if (err) {
             res.json(errorMessage);
         } else {
@@ -41,7 +41,7 @@ function updateProfile(req, res) {
         [email, password, name, surname, userId],
     );
 
-    database.querry(sql, function (err, rows) {
+    database.query(sql, function (err, rows) {
         if (err) {
             res.json(errorMessage);
         } else {
@@ -80,7 +80,7 @@ function deleteProfile(req, res) {
 
     let sql = mysql.format("DELETE * FROM user WHERE user_id=?", [userId]);
 
-    database.querry(sql, function (err, rows) {
+    database.query(sql, function (err, rows) {
         if (err) {
             res.json(errorMessage);
         } else {
