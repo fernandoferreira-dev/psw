@@ -4,10 +4,9 @@ const mysql = require("mysql2/promise");
 const options = require("./options.json");
 const database = mysql.createPool(options.database);
 
-function getAllUsers(req, res) {
-    let sql = mysql.format(
-        "SELECT user_email, user_password, user_nome, user_sobrenome, login_count, user_fav_musica from users",
-    );
+
+function getAllUsers(res) {
+    let sql = mysql.format("SELECT user_email, user_password, user_nome, user_sobrenome, login_count, user_fav_musica from users")
 
     database.query(sql, function (err, rows) {
         if (err) {
