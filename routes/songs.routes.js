@@ -1,17 +1,19 @@
 const express = require("express")
-
-const songHandler = require("../scripts/songs.handler")
 const router = express.Router()
 
+const SongsController = require("../controllers/songs.controller");
+const songsController = new SongsController();
 
-router.get("/", songHandler.getAllSongs)
+router.get("/", songsController.getAllSongs)
+router.post("/", songsController.createSong);
+
+router.get("/search", songsController.searchSongs);
 
 router
-    .route("/song")
-    .get(songHandler.getSong)
-    .put(songHandler.updateSong)
-    .patch(songHandler.patchSong)
-    .delete(songHandler.deleteSong);
-
+    .route("/:id")
+    .get(songsController.getSongById)
+    .put(songsController.updateSong)
+    .patch(songsController.patchSong)
+    .delete(songsController.deleteSong);
 
 module.exports = router
