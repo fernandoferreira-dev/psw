@@ -5,13 +5,8 @@ const options = require("../config/app.config.json");
 
 class UserController {
     constructor() {
-        /** @type {mysql.Pool} */
         this.database = mysql.createPool(options.database);
-
-        /** @type {RegExp} */
         this.emailRegEx = new RegExp(options.RegEx.email);
-
-        /** @type {RegExp} */
         this.nameRegEx = new RegExp(options.RegEx.names);
 
         this.getAllUsers = this.getAllUsers.bind(this);
@@ -21,10 +16,6 @@ class UserController {
         this.deleteProfile = this.deleteProfile.bind(this);
     }
 
-    /**
-     * @param {import('express').Request} req
-     * @param {import('express').Response} res Retorna Array com lista de utilizadores ou { error }
-     */
     async getAllUsers(req, res) {
         try {
             const [users] = await this.database.execute(
@@ -38,10 +29,6 @@ class UserController {
         }
     }
 
-    /**
-     * @param {import('express').Request} req Session: userId
-     * @param {import('express').Response} res Retorna Objeto do utilizador da sessão ou { error }
-     */
     async getProfile(req, res) {
         const userId = req.session?.userId;
 
@@ -66,10 +53,6 @@ class UserController {
         }
     }
 
-    /**
-     * @param {import('express').Request<{}, {}, { email?: string, password?: string, firstName?: string, lastName?: string }>} req Session: userId | Body: email, password, firstName, lastName
-     * @param {import('express').Response} res Retorna { message } ou { error }
-     */
     async updateProfile(req, res) {
         const userId = req.session?.userId;
         const { email, password, firstName, lastName } = req.body ?? {};
@@ -110,10 +93,6 @@ class UserController {
         }
     }
 
-    /**
-     * @param {import('express').Request<{}, {}, { field?: string, value?: any }>} req Session: userId | Body: field, value
-     * @param {import('express').Response} res Retorna { message } ou { error }
-     */
     async patchProfile(req, res) {
         const userId = req.session?.userId;
         const { field, value } = req.body ?? {};
@@ -156,10 +135,6 @@ class UserController {
         }
     }
 
-    /**
-     * @param {import('express').Request} req Session: userId
-     * @param {import('express').Response} res Retorna { message } ou { error }
-     */
     async deleteProfile(req, res) {
         const userId = req.session?.userId;
 
