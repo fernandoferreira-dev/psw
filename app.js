@@ -6,9 +6,10 @@ const routes = require("./routes/routes")
 
 const app = express();
 
-
 // Config das sessions '/config/session.config.js' acessivel por req.session.userId 
 setupSession(app);
+
+app.use("/images", express.static("images")); //to do: tirar isto depois 
 
 // Conexão do main router '/routes/routes.js'
 app.use("/", routes);
@@ -17,7 +18,6 @@ app.use("/", routes);
 app.use(express.static("www",
     { "index": "index.html" },
 ));
-
 
 app.listen(port, () => {
     console.log(`Example app listening on http://localhost:${port}`)
