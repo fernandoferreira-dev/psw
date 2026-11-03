@@ -70,7 +70,7 @@ async function loadProfileDialog() {
                 const payload = Object.fromEntries(new FormData(form));
 
                 // Envia os dados para a rota correspondente (/users/register ou /users/login)
-                const res = await fetch(`/users/${isRegister ? "register" : "login"}`, {
+                const res = await fetch(`${isRegister ? "register" : "login"}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),

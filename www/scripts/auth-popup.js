@@ -69,15 +69,15 @@ async function loadAuthDialog() {
                 // Converte os dados do formulário num objeto JSON
                 const payload = Object.fromEntries(new FormData(form));
 
-                // Envia os dados para a rota correspondente (/users/register ou /users/login)
-                const res = await fetch(`/users/${isRegister ? "register" : "login"}`, {
+                // Envia os dados para a rota de autenticação montada em /auth
+                const res = await fetch(`/auth/${isRegister ? "register" : "login"}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
                 });
 
                 const result = await res.json();
-                if (!res.ok) throw new Error(result.message || "Não foi possível realizar o pedido");
+                if (!res.ok) throw new Error(result.error || result.message || "Não foi possível realizar o pedido");
 
                 if (isRegister) {
                     // No registo: limpa os campos, muda para a vista de login e mostra mensagem de sucesso
