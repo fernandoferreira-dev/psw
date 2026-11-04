@@ -1,15 +1,21 @@
 const express = require('express');
-
-const port = 3000;
+const options = require("./config/app.config.json");
 const setupSession = require("./config/session.config");
 const routes = require("./routes/routes")
 
 const app = express();
+const { port } = options.server;
 
 // Config das sessions '/config/session.config.js' acessivel por req.session.userId 
 setupSession(app);
 
-app.use("/images", express.static("images")); //to do: tirar isto depois 
+app.get("/", (req, res) => {
+    if (req.session.userId) {
+        res.redirect("/pages/dashboard.html");
+    } else {
+        res.redirect("/pages/login.html");
+    }
+});
 
 // Conexão do main router '/routes/routes.js'
 app.use("/", routes);

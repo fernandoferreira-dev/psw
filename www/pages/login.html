@@ -1,20 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="pt">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Discos</title>
-    <link rel="stylesheet" href="/styles/pages/popup.css" type="text/css">
-  </head>
-  <body>
-    <header>
-      <h1 class="title">Discos</h1>
-      <div class="button-row">
-        <button class="button button-secondary" type="button" data-auth-view="login">Login</button>
-        <button class="button" type="button" data-auth-view="register">Registrar</button>
-      </div>
-    </header>
-    <div id="auth-dialog-container"></div>
-    <script src="/scripts/auth-popup.js"></script>
-  </body>
+    <title>Entrar | Discos</title>
+    <link rel="stylesheet" href="/styles/pages/login.css" type="text/css">
+</head>
+
+<body class="authentication-page">
+    <section class="authentication-card" aria-labelledby="login-title">
+        <div class="authentication-view" data-auth-view="login">
+            <p class="authentication-label">Bem-vindo de volta</p>
+            <h2 id="login-title">Entrar</h2>
+            <form class="authentication-form" data-auth-form="login">
+                <label for="login-email">Email</label>
+                <input id="login-email" name="email" type="email" autocomplete="email" required>
+                <label for="login-password">Password</label>
+                <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+                <button class="authentication-submit" type="submit">Continuar</button>
+            </form>
+            <p class="authentication-switch">Ainda não tens conta? <button type="button"
+                    data-auth-switch="register">Registar</button></p>
+        </div>
+
+        <div class="authentication-view" data-auth-view="register" hidden>
+            <p class="authentication-label">Junta-te à comunidade</p>
+            <h2 id="register-title">Criar conta</h2>
+            <form class="authentication-form" data-auth-form="register">
+                <label for="register-first-name">Nome</label>
+                <input id="register-first-name" name="firstName" type="text" autocomplete="given-name" required>
+                <label for="register-last-name">Apelido</label>
+                <input id="register-last-name" name="lastName" type="text" autocomplete="family-name" required>
+                <label for="register-email">Email</label>
+                <input id="register-email" name="email" type="email" autocomplete="email" required>
+                <label for="register-password">Password</label>
+                <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="8"
+                    required>
+                <button class="authentication-submit" type="submit">Criar conta</button>
+            </form>
+            <p class="authentication-switch">Já tens conta? <button type="button"
+                    data-auth-switch="login">Entrar</button></p>
+        </div>
+        <p class="authentication-message" id="authentication-message" role="status" aria-live="polite"></p>
+    </section>
+    <script src="/scripts/login.js"></script>
+</body>
+
 </html>

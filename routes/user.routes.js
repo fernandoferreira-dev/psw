@@ -1,17 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const UserController = require("../controllers/user.controller");
-const userController = new UserController();
+const { getAllUsers, getProfile, updateProfile, patchProfile, deleteProfile } = require("../controllers/user.controller");
 
-router.get("/", userController.getAllUsers)
+router.get("/", getAllUsers)
 
 router
     .route("/me")
-    .get(userController.getProfile)
-    .put(userController.updateProfile)
-    .patch(userController.patchProfile)
-    .delete(userController.deleteProfile);
+    .get(getProfile)
+    .put(updateProfile)
+    .patch(patchProfile)
+    .delete(deleteProfile);
 
 
 module.exports = router;
