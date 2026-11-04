@@ -8,11 +8,11 @@ const nameRegEx = new RegExp(options.RegEx.names);
 
 async function getAllUsers(req, res) {
     try {
-        const [users] = await database.execute(
-            "SELECT user_id, user_email, user_nome, user_sobrenome, login_count, user_fav_musica FROM users"
+        const [user] = await database.execute(
+            "SELECT user_id, user_email, user_nome, user_sobrenome, login_count, user_fav_musica FROM user"
         );
 
-        return res.status(200).json(users);
+        return res.status(200).json(user);
     } catch (error) {
         console.error("Erro ao listar utilizadores:", error);
         return res.status(500).json({ error: "Erro interno do servidor." });
@@ -27,16 +27,16 @@ async function getProfile(req, res) {
     }
 
     try {
-        const [users] = await database.execute(
-            "SELECT user_id, user_email, user_nome, user_sobrenome, login_count, user_fav_musica FROM users WHERE user_id = ?",
+        const [user] = await database.execute(
+            "SELECT user_id, user_email, user_nome, user_sobrenome, login_count, user_fav_musica FROM user WHERE user_id = ?",
             [userId]
         );
 
-        if (users.length === 0) {
+        if (user.length === 0) {
             return res.status(404).json({ error: "Utilizador não encontrado." });
         }
 
-        return res.status(200).json(users[0]);
+        return res.status(200).json(user[0]);
     } catch (error) {
         console.error("Erro ao obter perfil:", error);
         return res.status(500).json({ error: "Erro interno do servidor." });
@@ -68,7 +68,7 @@ async function updateProfile(req, res) {
 
     try {
         const [result] = await database.execute(
-            "UPDATE users SET user_email = ?, user_password = ?, user_nome = ?, user_sobrenome = ? WHERE user_id = ?",
+            "UPDATE user SET user_email = ?, user_password = ?, user_nome = ?, user_sobrenome = ? WHERE user_id = ?",
             [cleanEmail, password, cleanFirstName, cleanLastName, userId]
         );
 
@@ -110,7 +110,7 @@ async function patchProfile(req, res) {
 
     try {
         const [result] = await database.execute(
-            `UPDATE users SET ${dbColumn} = ? WHERE user_id = ?`,
+            `UPDATE user SET ${dbColumn} = ? WHERE user_id = ?`,
             [value, userId]
         );
 
@@ -134,7 +134,7 @@ async function deleteProfile(req, res) {
 
     try {
         const [result] = await database.execute(
-            "DELETE FROM users WHERE user_id = ?",
+            "DELETE FROM user WHERE user_id = ?",
             [userId]
         );
 

@@ -31,7 +31,7 @@ async function register(req, res) {
 
     try {
         const [existingUsers] = await database.execute(
-            "SELECT user_id FROM users WHERE user_email = ?",
+            "SELECT user_id FROM user WHERE user_email = ?",
             [cleanEmail]
         );
 
@@ -40,7 +40,7 @@ async function register(req, res) {
         }
 
         const [insertResult] = await database.execute(
-            "INSERT INTO users (user_email, user_password, user_nome, user_sobrenome) VALUES (?, ?, ?, ?)",
+            "INSERT INTO user (user_email, user_password, user_nome, user_sobrenome) VALUES (?, ?, ?, ?)",
             [cleanEmail, password, cleanFirstName, cleanLastName]
         );
 
@@ -66,23 +66,23 @@ async function login(req, res) {
     }
 
     if (typeof password !== "string" || password.length === 0 || password.length > 128) {
-        return res.status(400).json({ error: "Credenciais inválidas." });
+        return res.status(400).json({ error: "Credenciais inválidas. 1" });
     }
 
     try {
-        const [users] = await database.execute(
-            "SELECT user_id, password FROM users WHERE user_email = ?",
+        const user = await database.execute(
+            "SELECT user_id, user_password FROM user WHERE user_email = ?",
             [cleanEmail]
         );
 
-        if (users.length === 0) {
-            return res.status(401).json({ error: "Credenciais inválidas." });
+        if (user.length === 0) {
+            return res.status(401).json({ error: "Credenciais inválidas. 2" });
         }
 
-        const activeUser = users[0];
+        //const activeUser = user[0];
 
-        if (password !== activeUser.password) {
-            return res.status(401).json({ error: "Credenciais inválidas." });
+        if (password !== user.password) {
+            return res.status(401).json({ error: "Credenciais inválidas. 3" });
         }
 
         req.session.userId = activeUser.user_id;

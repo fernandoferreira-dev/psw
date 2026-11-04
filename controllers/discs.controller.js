@@ -36,7 +36,7 @@ async function searchDiscs(req, res) {
                     u.user_nome,
                     u.user_sobrenome
                 FROM musicas m
-                LEFT JOIN users u ON m.user_id = u.user_id
+                LEFT JOIN user u ON m.user_id = u.user_id
             `;
 
         const conditions = [];
