@@ -70,18 +70,18 @@ async function login(req, res) {
     }
 
     try {
-        const user = await database.execute(
+        const [users] = await database.execute(
             "SELECT user_id, user_password FROM user WHERE user_email = ?",
             [cleanEmail]
         );
 
-        if (user.length === 0) {
+        if (users.length === 0) {
             return res.status(401).json({ error: "Credenciais inválidas. 2" });
         }
 
-        //const activeUser = user[0];
+        const activeUser = users[0];
 
-        if (password !== user.password) {
+        if (password !== activeUser.user_password) {
             return res.status(401).json({ error: "Credenciais inválidas. 3" });
         }
 
