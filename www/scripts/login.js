@@ -41,7 +41,7 @@ authForms.forEach((form) => {
                 throw new Error(result.message || result.error || "Não foi possível concluir o pedido.");
             }
 
-            window.location.assign("/pages/dashboard.html");
+            window.location.assign("/pages/index.html");
         } catch (error) {
             authenticationMessage.textContent = error.message || "Não foi possível alcançar o servidor.";
             submitButton.disabled = false;
