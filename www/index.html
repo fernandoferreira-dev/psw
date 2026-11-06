@@ -1,29 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="pt">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Discos</title>
-    <link rel="stylesheet" href="/styles/pages/index.css" type="text/css">
-    <link rel="stylesheet" href="/styles/pages/popup.css" type="text/css">
-  </head>
-  <body>
-    <header>
-      <h1 class="title">Discos</h1>
-    </header>
-    <main>
-      <section class="home-card">
-        <h2>Site de discos</h2>
-        <p>Veja os seus albuns favoritos</p>
-        <div class="startbutton">
-          <a class="button" type="button" data-auth-view="register">Entrar</a>
-        </div>
-      </section>
+    <title>Descobrir | Discos</title>
+    <link rel="stylesheet" href="/styles/styles.css" type="text/css">
+</head>
+
+<body data-page="dashboard">
+    <div id="site-header"></div>
+    <main class="page-shell">
+        <section class="page-intro">
+            <p class="eyebrow">A tua coleção, sem ruído</p>
+            <h1>Descobre a próxima música.</h1>
+            <p class="intro-copy">Uma seleção aleatória da comunidade para ouvires, guardares e partilhares.</p>
+            <form class="search-bar" id="disc-search">
+                <label class="visually-hidden" for="disc-search-input">Pesquisar música ou artista</label>
+                <input id="disc-search-input" name="discName" type="search" placeholder="Pesquisar música ou artista">
+                <button class="button button-primary" type="submit">Pesquisar</button>
+            </form>
+            <button class="button button-secondary" id="refresh-music" type="button">Baralhar seleção</button>
+        </section>
+        <section aria-labelledby="random-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Agora a tocar</p>
+                    <h2 id="random-title">Sugestões aleatórias</h2>
+                </div>
+            </div>
+            <div class="music-grid" id="music-list">
+                <p class="loading">A procurar músicas...</p>
+            </div>
+        </section>
     </main>
-    <footer>
-      <p>Discos - Fernando Ferreira, Jaime Quaresma. 2026</p>
-    </footer>
-  </body>
-  <div id="auth-dialog-container"></div>
-  <script src="/scripts/auth-popup.js"></script>
+    <script src="/scripts/site.js"></script>
+
 </html>

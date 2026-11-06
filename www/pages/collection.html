@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>A minha coleção | Discos</title>
+    <link rel="stylesheet" href="/styles/styles.css" type="text/css">
+</head>
+
+<body data-page="collection">
+    <div id="site-header"></div>
+    <main class="page-shell collection-shell">
+        <section class="page-intro compact-intro">
+            <p class="eyebrow">A tua coleção</p>
+            <h1>Os teus discos.</h1>
+            <p class="intro-copy">Vê os discos que adicionaste e mantém os seus dados sempre certos.</p>
+        </section>
+        <section class="collection-panel" aria-labelledby="collection-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Biblioteca pessoal</p>
+                    <h2 id="collection-title">Discos associados à tua conta</h2>
+                </div>
+            </div>
+            <div class="collection-list" id="collection-list">
+                <p class="loading">A carregar a tua coleção...</p>
+            </div>
+        </section>
+        <section class="collection-panel add-disc-panel" aria-labelledby="add-disc-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Nova entrada</p>
+                    <h2 id="add-disc-title">Adicionar disco</h2>
+                </div>
+            </div>
+            <form class="add-disc-form" id="add-disc-form">
+                <div class="collection-fields">
+                    <label>Título<input name="title" type="text" required></label>
+                    <label>Artista<input name="artist" type="text" required></label>
+                    <label>Álbum<input name="album" type="text" placeholder="Single"></label>
+                    <label>Data de lançamento<input name="releaseDate" type="date" required></label>
+                    <label class="cover-field">Capa do álbum<input name="cover" type="text"
+                            placeholder="/images/covers/nome-da-capa.jpg"><small>Usa um caminho em www ou uma URL de
+                            imagem.</small></label>
+                </div>
+                <div class="collection-actions">
+                    <button class="button button-primary" type="submit">Adicionar à coleção</button>
+                    <span class="form-message" id="add-disc-message" role="status" aria-live="polite"></span>
+                </div>
+            </form>
+        </section>
+    </main>
+    <script src="/scripts/site.js"></script>
+</body>
+
+</html>

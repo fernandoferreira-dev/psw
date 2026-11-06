@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Perfil | Discos</title>
+    <link rel="stylesheet" href="/styles/styles.css" type="text/css">
+</head>
+
+<body data-page="profile">
+    <div id="site-header"></div>
+    <main class="page-shell profile-shell">
+        <section class="page-intro compact-intro">
+            <p class="eyebrow">A tua conta</p>
+            <h1>O teu perfil.</h1>
+            <p class="intro-copy">Mantém os teus dados atualizados para continuares a fazer parte da comunidade.</p>
+        </section>
+        <section class="profile-panel" aria-labelledby="profile-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Dados pessoais</p>
+                    <h2 id="profile-title">Editar perfil</h2>
+                </div>
+            </div>
+            <form class="profile-form" id="profile-form">
+                <label for="first-name">Nome</label><input id="first-name" name="firstName" type="text" required>
+                <label for="last-name">Apelido</label><input id="last-name" name="lastName" type="text" required>
+                <label for="email">Email</label><input id="email" name="email" type="email" required>
+                <label for="password">Nova password</label><input id="password" name="password" type="password"
+                    minlength="1" required>
+                <p class="form-hint">Por segurança, indica a password que queres usar nesta conta.</p>
+                <button class="button button-primary" type="submit">Guardar alterações</button>
+                <p class="form-message" id="profile-message" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+        <section class="favorite-panel" aria-labelledby="favorite-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">A tua escolha</p>
+                    <h2 id="favorite-title">Disco favorito</h2>
+                </div>
+            </div>
+            <div id="favorite-song" class="favorite-song">
+                <p class="loading">A carregar favorito...</p>
+            </div>
+        </section>
+    </main>
+    <script src="/scripts/site.js"></script>
+</body>
+
+</html>
