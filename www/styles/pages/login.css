@@ -8,27 +8,27 @@
     min-height: 100vh;
     margin: 0;
     padding: 24px;
-    color: #f7fbff;
+    color: #eee8dc;
     background:
-        linear-gradient(115deg, rgba(6, 24, 35, 0.72), rgba(12, 72, 81, 0.28)),
+        linear-gradient(115deg, rgba(12, 11, 10, 0.9), rgba(58, 31, 23, 0.68)),
         url("/images/bg.jpg") center / cover;
-    font-family: "Segoe UI", sans-serif;
+    font-family: "DM Sans", sans-serif;
 }
 
 .authentication-card {
     width: min(390px, calc(100% - 48px));
     padding: 34px;
-    border: 1px solid rgba(255, 255, 255, 0.42);
-    border-radius: 24px;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08));
-    box-shadow: 0 24px 80px rgba(5, 18, 30, 0.42), inset 0 1px rgba(255, 255, 255, 0.38);
+    border: 1px solid rgba(238, 232, 220, 0.24);
+    border-radius: 2px;
+    background: rgba(21, 20, 18, 0.9);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
     backdrop-filter: blur(24px) saturate(135%);
     -webkit-backdrop-filter: blur(24px) saturate(135%);
 }
 
 .authentication-label {
     margin: 0 0 10px;
-    color: rgba(255, 255, 255, 0.68);
+    color: #a79d8d;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -46,7 +46,7 @@
 }
 
 .authentication-form label {
-    color: rgba(247, 251, 255, 0.88);
+    color: #d4ccbd;
     font-weight: 600;
 }
 
@@ -54,32 +54,32 @@
     width: 100%;
     margin-bottom: 8px;
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid #4a433a;
+    border-radius: 2px;
+    color: #eee8dc;
+    background: #201e1a;
     font: inherit;
 }
 
 .authentication-form input:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.78);
+    outline: 1px solid rgba(209, 116, 81, 0.8);
     outline-offset: 1px;
 }
 
 .authentication-submit {
     margin-top: 8px;
     padding: 12px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
-    color: #163746;
-    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid #d17451;
+    border-radius: 2px;
+    color: #171310;
+    background: #d17451;
     font: inherit;
     font-weight: 700;
     cursor: pointer;
 }
 
 .authentication-submit:hover {
-    background: #fff;
+    background: #e08761;
 }
 
 .authentication-submit:disabled {
@@ -89,14 +89,14 @@
 
 .authentication-switch {
     margin: 20px 0 0;
-    color: rgba(247, 251, 255, 0.75);
+    color: #a79d8d;
     text-align: center;
 }
 
 .authentication-switch button {
     padding: 0;
     border: 0;
-    color: #fff;
+    color: #eee8dc;
     background: transparent;
     font: inherit;
     font-weight: 700;
@@ -107,7 +107,7 @@
 .authentication-message {
     min-height: 1.5em;
     margin: 8px 0 0;
-    color: rgba(255, 255, 255, 0.88);
+    color: #d4ccbd;
     text-align: center;
 }
 

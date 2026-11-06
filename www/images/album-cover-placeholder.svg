@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">Capa de álbum indisponível</title>
+  <desc id="desc">Placeholder escuro para futura capa de álbum.</desc>
+  <rect width="640" height="640" fill="#28231e"/>
+  <circle cx="320" cy="320" r="190" fill="none" stroke="#d17451" stroke-width="2" opacity=".8"/>
+  <circle cx="320" cy="320" r="112" fill="none" stroke="#c4934e" stroke-width="1" opacity=".7"/>
+  <circle cx="320" cy="320" r="15" fill="#d17451"/>
+  <path d="M80 520 520 80M80 80l440 440" stroke="#eee8dc" stroke-width="1" opacity=".18"/>
+  <text x="320" y="575" fill="#eee8dc" font-family="Georgia, serif" font-size="24" letter-spacing="7" text-anchor="middle">DISCOS</text>
+</svg>

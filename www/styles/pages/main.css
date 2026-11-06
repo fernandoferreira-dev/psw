@@ -1,0 +1,5 @@
+/* Ponto de entrada dos estilos; cada responsabilidade fica num ficheiro próprio. */
+@import "./base.css";
+@import "./header.css";
+@import "./components.css";
+@import "./responsive.css";
