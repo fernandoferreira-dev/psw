@@ -11,7 +11,7 @@ setupSession(app);
 
 app.get("/", (req, res) => {
     if (req.session.userId) {
-        res.redirect("/pages/index.html");
+        res.redirect("/index.html");
     } else {
         res.redirect("/pages/login.html");
     }
