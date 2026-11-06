@@ -5,6 +5,7 @@ const options = require("../config/app.config.json");
 const database = mysql.createPool(options.database);
 const emailRegEx = new RegExp(options.RegEx.email);
 const nameRegEx = new RegExp(options.RegEx.names);
+const bcrypt = require("bcrypt");
 
 async function register(req, res) {
     const { email, password, firstName, lastName } = req.body ?? {};
@@ -39,9 +40,11 @@ async function register(req, res) {
             return res.status(401).json({ error: "Utilizador já existente." });
         }
 
+        const hashPassword = await bcrypt.hash(password, 12);
+
         const [insertResult] = await database.execute(
             "INSERT INTO user (user_email, user_password, user_nome, user_sobrenome) VALUES (?, ?, ?, ?)",
-            [cleanEmail, password, cleanFirstName, cleanLastName]
+            [cleanEmail, hashPassword, cleanFirstName, cleanLastName]
         );
 
         req.session.userId = insertResult.insertId;
@@ -81,7 +84,9 @@ async function login(req, res) {
 
         const activeUser = users[0];
 
-        if (password !== activeUser.user_password) {
+        const isMatch = await bcrypt.compare(password, activeUser.user_password);
+
+        if (!isMatch) {
             return res.status(401).json({ error: "Credenciais inválidas. 3" });
         }
 
