@@ -48,7 +48,7 @@ async function getProfile(req, res) {
         const [user] = await database.execute(
             `SELECT u.user_id, u.user_email, u.user_nome, u.user_sobrenome, u.login_count,
                     u.user_fav_musica, m.musica_nome AS favorite_song_name,
-                    m.musica_artista AS favorite_song_artist
+                    m.musica_artista AS favorite_song_artist, m.musica_capa AS favorite_song_cover
              FROM user u
              LEFT JOIN musicas m ON m.musica_id = u.user_fav_musica
              WHERE u.user_id = ?`,
@@ -77,13 +77,14 @@ async function getPublicProfile(req, res) {
         const [users] = await database.execute(
             `SELECT u.user_id, u.user_nome, u.user_sobrenome, u.user_fav_musica,
                     f.musica_nome AS favorite_song_name, f.musica_artista AS favorite_song_artist,
+                    f.musica_capa AS favorite_song_cover,
                     COUNT(m.musica_id) AS music_count
              FROM user u
              LEFT JOIN musicas m ON m.user_id = u.user_id
              LEFT JOIN musicas f ON f.musica_id = u.user_fav_musica
              WHERE u.user_id = ?
              GROUP BY u.user_id, u.user_nome, u.user_sobrenome, u.user_fav_musica,
-                      f.musica_nome, f.musica_artista`,
+                      f.musica_nome, f.musica_artista, f.musica_capa`,
             [userId]
         );
 

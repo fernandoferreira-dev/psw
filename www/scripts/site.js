@@ -113,7 +113,7 @@ async function loadUserProfile() {
         requestJson(`/discs/by-user/${userId}`),
     ]);
 
-    document.querySelector("#public-profile").innerHTML = `<div class="public-avatar avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div><p class="eyebrow">Perfil público</p><h1>${user.user_nome} ${user.user_sobrenome}</h1><p class="intro-copy">${user.music_count} ${Number(user.music_count) === 1 ? "disco adicionado" : "discos adicionados"} à comunidade.</p>${user.favorite_song_name ? `<p class="public-favorite">Favorito: <strong>${user.favorite_song_name}</strong> · ${user.favorite_song_artist}</p>` : "<p class=\"public-favorite\">Ainda não escolheu um favorito.</p>"}</div>`;
+    document.querySelector("#public-profile").innerHTML = `<div class="public-avatar avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div><p class="eyebrow">Perfil público</p><h1>${user.user_nome} ${user.user_sobrenome}</h1><p class="intro-copy">${user.music_count} ${Number(user.music_count) === 1 ? "disco adicionado" : "discos adicionados"} à comunidade.</p>${user.favorite_song_name ? `<p class="public-favorite">Favorito: <a href="/pages/disc.html?id=${user.user_fav_musica}"><strong>${user.favorite_song_name}</strong> · ${user.favorite_song_artist}</a></p>` : "<p class=\"public-favorite\">Ainda não escolheu um favorito.</p>"}</div>`;
     renderMusic(discs, "#user-discs");
 }
 
@@ -208,7 +208,7 @@ async function loadProfile() {
     document.querySelector("#first-name").value = user.user_nome;
     document.querySelector("#last-name").value = user.user_sobrenome;
     document.querySelector("#email").value = user.user_email;
-    document.querySelector("#favorite-song").innerHTML = user.favorite_song_name ? `<a class="favorite-song-link" href="/pages/disc.html?id=${user.user_fav_musica}"><span class="record-art"><img class="album-cover" src="/images/album-cover-placeholder.svg" alt="Capa de ${user.favorite_song_name}"></span><span><strong>${user.favorite_song_name}</strong><small>${user.favorite_song_artist}</small></span></a>` : "<p class=\"loading\">Ainda não escolheste um disco favorito.</p>";
+    document.querySelector("#favorite-song").innerHTML = user.favorite_song_name ? `<a class="favorite-song-link" href="/pages/disc.html?id=${user.user_fav_musica}"><span class="record-art"><img class="album-cover" src="${user.favorite_song_cover || "/images/album-cover-placeholder.svg"}" alt="Capa de ${user.favorite_song_name}"></span><span><strong>${user.favorite_song_name}</strong><small>${user.favorite_song_artist}</small></span></a>` : "<p class=\"loading\">Ainda não escolheste um disco favorito.</p>";
     document.querySelector("#profile-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         // Bloqueia o botão durante o pedido para evitar envios duplicados.

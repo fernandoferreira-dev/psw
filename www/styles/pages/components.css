@@ -79,6 +79,8 @@
 .public-profile .intro-copy { margin-bottom: 10px; }
 .public-favorite { color: var(--muted); font-size: .85rem; }
 .public-favorite strong { color: var(--ink); }
+.public-favorite a { color: inherit; }
+.public-favorite a:hover strong { color: var(--coral); }
 
 /* A coleção usa uma capa fixa e um formulário editável para cada disco. */
 .collection-panel { max-width: 980px; border-top: 1px solid var(--line); padding-top: 28px; }
