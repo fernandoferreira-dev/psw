@@ -7,12 +7,79 @@ const database = mysql.createPool(options.database);
 async function getAllDiscs(req, res) {
     try {
         const [discs] = await database.execute(
-            "SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento FROM musicas"
+            "SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa FROM musicas"
         );
 
         return res.status(200).json(discs);
     } catch (error) {
         console.error("Erro ao procurar músicas:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
+    }
+}
+
+async function getRandomDiscs(req, res) {
+    const requestedLimit = Number(req.query.limit) || 6;
+    const limit = Math.min(Math.max(requestedLimit, 1), 12);
+
+    try {
+        const [discs] = await database.query(
+            `SELECT m.musica_id, m.musica_nome, m.musica_artista, m.musica_album,
+                    m.musica_data_lancamento, m.musica_capa, m.user_id, u.user_nome, u.user_sobrenome
+             FROM musicas m
+             LEFT JOIN user u ON m.user_id = u.user_id
+             ORDER BY RAND()
+             LIMIT ${limit}`
+        );
+
+        return res.status(200).json(discs);
+    } catch (error) {
+        console.error("Erro ao procurar músicas aleatórias:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
+    }
+}
+
+async function getMyDiscs(req, res) {
+    const userId = req.session?.userId;
+
+    if (!userId) {
+        return res.status(401).json({ error: "Sessão não iniciada." });
+    }
+
+    try {
+        const [discs] = await database.execute(
+            `SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa
+             FROM musicas
+             WHERE user_id = ?
+             ORDER BY musica_nome ASC`,
+            [userId]
+        );
+
+        return res.status(200).json(discs);
+    } catch (error) {
+        console.error("Erro ao procurar músicas do utilizador:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
+    }
+}
+
+async function getDiscsByUser(req, res) {
+    const userId = Number(req.params.id);
+
+    if (!userId || Number.isNaN(userId)) {
+        return res.status(400).json({ error: "Identificador de utilizador inválido." });
+    }
+
+    try {
+        const [discs] = await database.execute(
+            `SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa, user_id
+             FROM musicas
+             WHERE user_id = ?
+             ORDER BY musica_nome ASC`,
+            [userId]
+        );
+
+        return res.status(200).json(discs);
+    } catch (error) {
+        console.error("Erro ao procurar músicas públicas do utilizador:", error);
         return res.status(500).json({ error: "Erro interno do servidor." });
     }
 }
@@ -32,6 +99,7 @@ async function searchDiscs(req, res) {
                     m.musica_artista, 
                     m.musica_album, 
                     m.musica_data_lancamento,
+                    m.musica_capa,
                     u.user_id,
                     u.user_nome,
                     u.user_sobrenome
@@ -75,7 +143,11 @@ async function getDiscById(req, res) {
 
     try {
         const [discs] = await database.execute(
-            "SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento FROM musicas WHERE musica_id = ?",
+            `SELECT m.musica_id, m.musica_nome, m.musica_artista, m.musica_album,
+                    m.musica_data_lancamento, m.musica_capa, m.user_id, u.user_nome, u.user_sobrenome
+             FROM musicas m
+             LEFT JOIN user u ON m.user_id = u.user_id
+             WHERE m.musica_id = ?`,
             [discId]
         );
 
@@ -91,7 +163,7 @@ async function getDiscById(req, res) {
 }
 
 async function createDisc(req, res) {
-    const { title, artist, album, releaseDate } = req.body ?? {};
+    const { title, artist, album, releaseDate, cover } = req.body ?? {};
 
     if (!title || !artist) {
         return res.status(400).json({ error: "O título e o artista são obrigatórios." });
@@ -103,8 +175,8 @@ async function createDisc(req, res) {
 
     try {
         const [insertResult] = await database.execute(
-            "INSERT INTO musicas (musica_nome, musica_artista, musica_album, musica_data_lancamento) VALUES (?, ?, ?, ?)",
-            [cleanTitle, cleanArtist, cleanAlbum, releaseDate || null]
+            "INSERT INTO musicas (musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa) VALUES (?, ?, ?, ?, ?)",
+            [cleanTitle, cleanArtist, cleanAlbum, releaseDate || null, cover?.trim() || null]
         );
 
         return res.status(201).json({
@@ -117,9 +189,36 @@ async function createDisc(req, res) {
     }
 }
 
+async function createMyDisc(req, res) {
+    const userId = req.session?.userId;
+    const { title, artist, album, releaseDate, cover } = req.body ?? {};
+
+    if (!userId) {
+        return res.status(401).json({ error: "Sessão não iniciada." });
+    }
+
+    if (!title?.trim() || !artist?.trim() || !releaseDate) {
+        return res.status(400).json({ error: "O título, artista e data de lançamento são obrigatórios." });
+    }
+
+    try {
+        const [result] = await database.execute(
+            `INSERT INTO musicas
+             (musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa, user_id)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [title.trim(), artist.trim(), album?.trim() || "Single", releaseDate, cover?.trim() || null, userId]
+        );
+
+        return res.status(201).json({ message: "Música adicionada à tua coleção.", discId: result.insertId });
+    } catch (error) {
+        console.error("Erro ao adicionar música do utilizador:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
+    }
+}
+
 async function updateDisc(req, res) {
     const discId = Number(req.params.id);
-    const { title, artist, album, releaseDate } = req.body ?? {};
+    const { title, artist, album, releaseDate, cover } = req.body ?? {};
 
     if (!discId || isNaN(discId)) {
         return res.status(400).json({ error: "Identificador de música inválido." });
@@ -131,8 +230,8 @@ async function updateDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            "UPDATE musicas SET musica_nome = ?, musica_artista = ?, musica_album = ?, musica_data_lancamento = ? WHERE musica_id = ?",
-            [title.trim(), artist.trim(), album ? album.trim() : null, releaseDate || null, discId]
+            "UPDATE musicas SET musica_nome = ?, musica_artista = ?, musica_album = ?, musica_data_lancamento = ?, musica_capa = ? WHERE musica_id = ?",
+            [title.trim(), artist.trim(), album ? album.trim() : null, releaseDate || null, cover?.trim() || null, discId]
         );
 
         if (result.affectedRows === 0) {
@@ -142,6 +241,71 @@ async function updateDisc(req, res) {
         return res.status(200).json({ message: "Música atualizada com sucesso." });
     } catch (error) {
         console.error("Erro ao atualizar música:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
+    }
+}
+
+async function updateMyDisc(req, res) {
+    const userId = req.session?.userId;
+    const discId = Number(req.params.id);
+    const { title, artist, album, releaseDate, cover } = req.body ?? {};
+
+    if (!userId) {
+        return res.status(401).json({ error: "Sessão não iniciada." });
+    }
+
+    if (!discId || Number.isNaN(discId)) {
+        return res.status(400).json({ error: "Identificador de música inválido." });
+    }
+
+    if (!title?.trim() || !artist?.trim()) {
+        return res.status(400).json({ error: "O título e o artista são obrigatórios." });
+    }
+
+    try {
+        const [result] = await database.execute(
+            `UPDATE musicas
+             SET musica_nome = ?, musica_artista = ?, musica_album = ?, musica_data_lancamento = ?, musica_capa = ?
+             WHERE musica_id = ? AND user_id = ?`,
+            [title.trim(), artist.trim(), album?.trim() || "Single", releaseDate || null, cover?.trim() || null, discId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Música não encontrada na tua coleção." });
+        }
+
+        return res.status(200).json({ message: "Música atualizada com sucesso." });
+    } catch (error) {
+        console.error("Erro ao atualizar música do utilizador:", error);
+        return res.status(500).json({ error: "Erro interno do servidor." });
+    }
+}
+
+async function deleteMyDisc(req, res) {
+    const userId = req.session?.userId;
+    const discId = Number(req.params.id);
+
+    if (!userId) {
+        return res.status(401).json({ error: "Sessão não iniciada." });
+    }
+
+    if (!discId || Number.isNaN(discId)) {
+        return res.status(400).json({ error: "Identificador de música inválido." });
+    }
+
+    try {
+        const [result] = await database.execute(
+            "DELETE FROM musicas WHERE musica_id = ? AND user_id = ?",
+            [discId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Música não encontrada na tua coleção." });
+        }
+
+        return res.status(200).json({ message: "Música removida com sucesso." });
+    } catch (error) {
+        console.error("Erro ao remover música do utilizador:", error);
         return res.status(500).json({ error: "Erro interno do servidor." });
     }
 }
@@ -207,4 +371,4 @@ async function deleteDisc(req, res) {
     }
 }
 
-module.exports = { getAllDiscs, searchDiscs, getDiscById, createDisc, updateDisc, patchDisc, deleteDisc };
+module.exports = { getAllDiscs, getRandomDiscs, getMyDiscs, getDiscsByUser, searchDiscs, getDiscById, createDisc, createMyDisc, updateDisc, updateMyDisc, patchDisc, deleteDisc, deleteMyDisc };

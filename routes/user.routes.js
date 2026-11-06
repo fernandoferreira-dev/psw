@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAllUsers, getProfile, updateProfile, patchProfile, deleteProfile } = require("../controllers/user.controller");
+const { getAllUsers, getUserRanking, getProfile, getPublicProfile, setFavorite, clearFavorite, updateProfile, patchProfile, deleteProfile } = require("../controllers/user.controller");
 
 router.get("/", getAllUsers)
+router.get("/ranking", getUserRanking)
+router.put("/me/favorite", setFavorite);
+router.delete("/me/favorite", clearFavorite);
 
 router
     .route("/me")
@@ -11,6 +14,8 @@ router
     .put(updateProfile)
     .patch(patchProfile)
     .delete(deleteProfile);
+
+router.get("/:id", getPublicProfile);
 
 
 module.exports = router;

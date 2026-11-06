@@ -7,6 +7,7 @@ CREATE TABLE musicas (
     musica_artista VARCHAR(255) NOT NULL,
     musica_album VARCHAR(255) NOT NULL DEFAULT 'Single',
     musica_data_lancamento DATE NOT NULL,
+    musica_capa VARCHAR(500) DEFAULT NULL,
     user_id INT
 );
 
