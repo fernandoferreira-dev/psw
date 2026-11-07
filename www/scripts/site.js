@@ -2,6 +2,44 @@
 const headerContainer = document.querySelector("#site-header");
 // Identifica a página atual para marcar o link de navegação ativo.
 const pageName = document.body.dataset.page;
+const COVER_PLACEHOLDER = "/images/album-cover-placeholder.svg";
+
+function getCoverUrl(disc) {
+    return disc.musica_capa || COVER_PLACEHOLDER;
+}
+
+function formRequest(method, form) {
+    return {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+    };
+}
+
+function renderFavoriteSong(user) {
+    if (!user.favorite_song_name) {
+        return "<p class=\"loading\">Ainda não escolheste um disco favorito.</p>";
+    }
+
+    return `
+        <a class="favorite-song-link" href="/pages/disc.html?id=${user.user_fav_musica}">
+            <span class="record-art">
+                <img class="album-cover" src="${user.favorite_song_cover || COVER_PLACEHOLDER}" alt="Capa de ${user.favorite_song_name}">
+            </span>
+            <span>
+                <strong>${user.favorite_song_name}</strong>
+                <small>${user.favorite_song_artist}</small>
+            </span>
+        </a>`;
+}
+
+function renderPublicFavorite(user) {
+    if (!user.favorite_song_name) {
+        return "<p class=\"public-favorite\">Ainda não escolheu um favorito.</p>";
+    }
+
+    return `<p class="public-favorite">Favorito: <a href="/pages/disc.html?id=${user.user_fav_musica}"><strong>${user.favorite_song_name}</strong> · ${user.favorite_song_artist}</a></p>`;
+}
 
 // Centraliza o parsing das respostas e transforma erros da API em mensagens visíveis.
 async function requestJson(url, options) {
@@ -39,7 +77,7 @@ async function loadHeader() {
 function renderMusic(discs, selector = "#music-list") {
     const list = document.querySelector(selector);
     // Mostra um estado vazio quando a base de dados ainda não tem músicas.
-    list.innerHTML = discs.length ? discs.map((disc, index) => `<a class="music-card" href="/pages/disc.html?id=${disc.musica_id}" style="--delay: ${index * 70}ms"><span class="music-number">0${index + 1}</span><span class="record-art"><img class="album-cover" src="${disc.musica_capa || "/images/album-cover-placeholder.svg"}" alt="Capa de ${disc.musica_nome}"></span><span class="music-info"><strong>${disc.musica_nome}</strong><span>${disc.musica_artista}</span><small>${disc.musica_album || "Single"}</small></span></a>`).join("") : "<p class=\"loading\">Ainda não existem músicas para mostrar.</p>";
+    list.innerHTML = discs.length ? discs.map((disc, index) => `<a class="music-card" href="/pages/disc.html?id=${disc.musica_id}" style="--delay: ${index * 70}ms"><span class="music-number">0${index + 1}</span><span class="record-art"><img class="album-cover" src="${getCoverUrl(disc)}" alt="Capa de ${disc.musica_nome}"></span><span class="music-info"><strong>${disc.musica_nome}</strong><span>${disc.musica_artista}</span><small>${disc.musica_album || "Single"}</small></span></a>`).join("") : "<p class=\"loading\">Ainda não existem músicas para mostrar.</p>";
 }
 
 async function loadMusic(endpoint = "/discs/random?limit=6") {
@@ -76,7 +114,7 @@ async function loadDiscDetail(user) {
     const disc = await requestJson(`/discs/${discId}`);
     const isFavorite = Number(user.user_fav_musica) === Number(disc.musica_id);
 
-    detail.innerHTML = `<div class="detail-cover"><img class="album-cover" src="${disc.musica_capa || "/images/album-cover-placeholder.svg"}" alt="Capa de ${disc.musica_nome}"></div><div class="detail-copy"><p class="eyebrow">Detalhes do disco</p><h1>${disc.musica_nome}</h1><p class="detail-artist">${disc.musica_artista}</p><p class="detail-album">${disc.musica_album || "Single"} · ${disc.musica_data_lancamento ? String(disc.musica_data_lancamento).slice(0, 10) : "Data desconhecida"}</p>${disc.user_id ? `<p class="detail-contributor">Adicionado por <a href="/pages/user.html?id=${disc.user_id}">${disc.user_nome} ${disc.user_sobrenome}</a></p>` : "<p class=\"detail-contributor\">Adicionado pela comunidade</p>"}<button class="button favorite-button ${isFavorite ? "is-favorite" : ""}" id="favorite-button" type="button" aria-pressed="${isFavorite}">${isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}</button><p class="form-message" id="favorite-message" role="status" aria-live="polite"></p></div>`;
+    detail.innerHTML = `<div class="detail-cover"><img class="album-cover" src="${getCoverUrl(disc)}" alt="Capa de ${disc.musica_nome}"></div><div class="detail-copy"><p class="label">Detalhes do disco</p><h1>${disc.musica_nome}</h1><p class="detail-artist">${disc.musica_artista}</p><p class="detail-album">${disc.musica_album || "Single"} · ${disc.musica_data_lancamento ? String(disc.musica_data_lancamento).slice(0, 10) : "Data desconhecida"}</p>${disc.user_id ? `<p class="detail-contributor">Adicionado por <a href="/pages/user.html?id=${disc.user_id}">${disc.user_nome} ${disc.user_sobrenome}</a></p>` : "<p class=\"detail-contributor\">Adicionado pela comunidade</p>"}<button class="btn favorite-button ${isFavorite ? "is-favorite" : ""}" id="favorite-button" type="button" aria-pressed="${isFavorite}">${isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}</button><p class="form-message" id="favorite-message" role="status" aria-live="polite"></p></div>`;
 
     document.querySelector("#favorite-button").addEventListener("click", async (event) => {
         const button = event.currentTarget;
@@ -113,7 +151,7 @@ async function loadUserProfile() {
         requestJson(`/discs/by-user/${userId}`),
     ]);
 
-    document.querySelector("#public-profile").innerHTML = `<div class="public-avatar avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div><p class="eyebrow">Perfil público</p><h1>${user.user_nome} ${user.user_sobrenome}</h1><p class="intro-copy">${user.music_count} ${Number(user.music_count) === 1 ? "disco adicionado" : "discos adicionados"} à comunidade.</p>${user.favorite_song_name ? `<p class="public-favorite">Favorito: <a href="/pages/disc.html?id=${user.user_fav_musica}"><strong>${user.favorite_song_name}</strong> · ${user.favorite_song_artist}</a></p>` : "<p class=\"public-favorite\">Ainda não escolheu um favorito.</p>"}</div>`;
+    document.querySelector("#public-profile").innerHTML = `<div class="public-avatar avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div><p class="label">Perfil público</p><h1>${user.user_nome} ${user.user_sobrenome}</h1><p class="lead">${user.music_count} ${Number(user.music_count) === 1 ? "disco adicionado" : "discos adicionados"} à comunidade.</p>${renderPublicFavorite(user)}</div>`;
     renderMusic(discs, "#user-discs");
 }
 
@@ -132,11 +170,7 @@ async function loadCollection() {
             message.textContent = "A adicionar...";
 
             try {
-                await requestJson("/discs/mine", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(Object.fromEntries(new FormData(addForm))),
-                });
+                await requestJson("/discs/mine", formRequest("POST", addForm));
                 addForm.reset();
                 message.textContent = "Disco adicionado à tua coleção.";
                 await loadCollection();
@@ -153,7 +187,7 @@ async function loadCollection() {
         return;
     }
 
-    list.innerHTML = discs.map((disc) => `<article class="collection-item"><button class="collection-summary" data-edit-disc type="button" aria-expanded="false"><span class="collection-cover"><img class="album-cover" src="${disc.musica_capa || "/images/album-cover-placeholder.svg"}" alt="Capa de ${disc.musica_nome}"></span><span class="collection-summary-copy"><strong>${disc.musica_nome}</strong><span>${disc.musica_artista}</span></span><span class="collection-edit-label">Editar <span aria-hidden="true">+</span></span></button><form class="collection-form" data-disc-id="${disc.musica_id}" hidden><div class="collection-fields"><label>Título<input name="title" type="text" value="${disc.musica_nome}" required></label><label>Artista<input name="artist" type="text" value="${disc.musica_artista}" required></label><label>Álbum<input name="album" type="text" value="${disc.musica_album || "Single"}"></label><label>Data de lançamento<input name="releaseDate" type="date" value="${disc.musica_data_lancamento ? String(disc.musica_data_lancamento).slice(0, 10) : ""}"></label><label class="cover-field">Capa do álbum<input name="cover" type="text" value="${disc.musica_capa || ""}" placeholder="/images/covers/nome-da-capa.jpg"><small>Caminho local ou URL de imagem.</small></label></div><div class="collection-actions"><button class="button button-primary" type="submit">Guardar</button><button class="button button-danger" data-delete-disc type="button">Remover</button><span class="form-message" data-collection-message role="status" aria-live="polite"></span></div></form></article>`).join("");
+    list.innerHTML = discs.map((disc) => `<article class="collection-item"><button class="collection-summary" data-edit-disc type="button" aria-expanded="false"><span class="collection-cover"><img class="album-cover" src="${getCoverUrl(disc)}" alt="Capa de ${disc.musica_nome}"></span><span class="collection-summary-copy"><strong>${disc.musica_nome}</strong><span>${disc.musica_artista}</span></span><span class="collection-edit-label">Editar <span aria-hidden="true">+</span></span></button><form class="collection-form" data-disc-id="${disc.musica_id}" hidden><div class="collection-fields"><label>Título<input name="title" type="text" value="${disc.musica_nome}" required></label><label>Artista<input name="artist" type="text" value="${disc.musica_artista}" required></label><label>Álbum<input name="album" type="text" value="${disc.musica_album || "Single"}"></label><label>Data de lançamento<input name="releaseDate" type="date" value="${disc.musica_data_lancamento ? String(disc.musica_data_lancamento).slice(0, 10) : ""}"></label><label class="cover-field">Capa do álbum<input name="cover" type="text" value="${disc.musica_capa || ""}" placeholder="/images/covers/nome-da-capa.jpg"><small>Caminho local ou URL de imagem.</small></label></div><div class="collection-actions"><button class="btn btn-main" type="submit">Guardar</button><button class="btn btn-danger" data-delete-disc type="button">Remover</button><span class="form-message" data-collection-message role="status" aria-live="polite"></span></div></form></article>`).join("");
 
     list.querySelectorAll(".collection-form").forEach((form) => {
         const summary = form.parentElement.querySelector("[data-edit-disc]");
@@ -174,11 +208,7 @@ async function loadCollection() {
             message.textContent = "A guardar...";
 
             try {
-                await requestJson(`/discs/mine/${discId}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(Object.fromEntries(new FormData(form))),
-                });
+                await requestJson(`/discs/mine/${discId}`, formRequest("PUT", form));
                 message.textContent = "Guardado.";
             } catch (error) {
                 message.textContent = error.message;
@@ -208,7 +238,7 @@ async function loadProfile() {
     document.querySelector("#first-name").value = user.user_nome;
     document.querySelector("#last-name").value = user.user_sobrenome;
     document.querySelector("#email").value = user.user_email;
-    document.querySelector("#favorite-song").innerHTML = user.favorite_song_name ? `<a class="favorite-song-link" href="/pages/disc.html?id=${user.user_fav_musica}"><span class="record-art"><img class="album-cover" src="${user.favorite_song_cover || "/images/album-cover-placeholder.svg"}" alt="Capa de ${user.favorite_song_name}"></span><span><strong>${user.favorite_song_name}</strong><small>${user.favorite_song_artist}</small></span></a>` : "<p class=\"loading\">Ainda não escolheste um disco favorito.</p>";
+    document.querySelector("#favorite-song").innerHTML = renderFavoriteSong(user);
     document.querySelector("#profile-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         // Bloqueia o botão durante o pedido para evitar envios duplicados.
@@ -218,7 +248,7 @@ async function loadProfile() {
         message.textContent = "A guardar...";
         try {
             // FormData converte os campos do formulário num objeto enviado em JSON.
-            await requestJson("/users/me", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))) });
+            await requestJson("/users/me", formRequest("PUT", event.currentTarget));
             message.textContent = "Perfil atualizado com sucesso.";
             document.querySelector("#password").value = "";
         } catch (error) { message.textContent = error.message; } finally { button.disabled = false; }

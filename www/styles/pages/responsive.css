@@ -1,22 +1,75 @@
-/* Mantém a navegação, os cartões e o formulário utilizáveis em ecrãs pequenos. */
 @media (max-width: 720px) {
-    /* O header passa a ocupar duas linhas para evitar elementos apertados. */
-    .site-header { flex-wrap: wrap; gap: 22px; padding: 20px; }
-    nav { order: 3; width: 100%; }
-    .header-actions { margin-left: auto; }
-    .page-shell { padding: 38px 20px 70px; }
-    .page-intro { margin-bottom: 48px; }
-    h1 { font-size: 3rem; }
-    .search-bar { width: 100%; }
-    /* Uma coluna torna os cartões legíveis em telemóveis. */
-    .music-grid { grid-template-columns: 1fr; }
-    .collection-item { grid-template-columns: 1fr; }
-    .collection-cover { width: 128px; height: 128px; }
-    .collection-fields { grid-template-columns: 1fr; }
-    .disc-detail { grid-template-columns: 1fr; gap: 32px; }
-    .detail-cover { max-width: 320px; }
-    .public-profile { align-items: flex-start; flex-direction: column; gap: 16px; }
+    .site-header {
+        flex-wrap: wrap;
+        gap: 22px;
+        padding: 20px;
+    }
+
+    nav {
+        order: 3;
+        width: 100%;
+    }
+
+    .header-actions {
+        margin-left: auto;
+    }
+
+    .container {
+        padding: 38px 20px 70px;
+    }
+
+    .intro {
+        margin-bottom: 48px;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+
+    .music-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .collection-item {
+        grid-template-columns: 1fr;
+    }
+
+    .collection-cover {
+        width: 128px;
+        height: 128px;
+    }
+
+    .collection-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .disc-detail {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .detail-cover {
+        max-width: 320px;
+    }
+
+    .public-profile {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
     /* Os campos do perfil deixam de ficar lado a lado. */
-    .profile-form { grid-template-columns: 1fr; }
-    .profile-form .button, .form-hint, .form-message { grid-column: auto; }
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-form .btn,
+    .form-hint,
+    .form-message {
+        grid-column: auto;
+    }
 }

@@ -1,3 +1,2 @@
-/* Importa os estilos de fontes e o ponto de entrada das páginas principais. */
-@import "./fonts.css";
 @import "./pages/main.css";
+@import "./fonts.css"
