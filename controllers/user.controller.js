@@ -5,6 +5,7 @@ const options = require("../config/app.config.json");
 const database = mysql.createPool(options.database);
 const emailRegEx = new RegExp(options.RegEx.email);
 const nameRegEx = new RegExp(options.RegEx.names);
+const bcrypt = require("bcrypt");
 
 async function getAllUsers(req, res) {
     try {
@@ -153,6 +154,10 @@ async function updateProfile(req, res) {
         return res.status(400).json({ error: "Todos os campos (email, password, nome e sobrenome) são obrigatórios." });
     }
 
+    if (typeof password !== "string" || password.length === 0 || password.length > 128) {
+        return res.status(400).json({ error: "Credenciais inválidas." });
+    }
+
     const cleanEmail = email.trim().toLowerCase();
     if (!emailRegEx.test(cleanEmail)) {
         return res.status(400).json({ error: "Endereço de email inválido." });
@@ -165,9 +170,10 @@ async function updateProfile(req, res) {
     }
 
     try {
+        const hashedPassword = await bcrypt.hash(password, 12);
         const [result] = await database.execute(
             "UPDATE user SET user_email = ?, user_password = ?, user_nome = ?, user_sobrenome = ? WHERE user_id = ?",
-            [cleanEmail, password, cleanFirstName, cleanLastName, userId]
+            [cleanEmail, hashedPassword, cleanFirstName, cleanLastName, userId]
         );
 
         if (result.affectedRows === 0) {
@@ -206,10 +212,15 @@ async function patchProfile(req, res) {
         return res.status(400).json({ error: "Endereço de email inválido." });
     }
 
+    if (field === "password" && (typeof value !== "string" || value.length === 0 || value.length > 128)) {
+        return res.status(400).json({ error: "Credenciais inválidas." });
+    }
+
     try {
+        const updateValue = field === "password" ? await bcrypt.hash(value, 12) : value;
         const [result] = await database.execute(
             `UPDATE user SET ${dbColumn} = ? WHERE user_id = ?`,
-            [value, userId]
+            [updateValue, userId]
         );
 
         if (result.affectedRows === 0) {
