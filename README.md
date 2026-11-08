@@ -4,16 +4,16 @@
 ├── app.js
 ├── package.json
 ├── package-lock.json
-├── config
-├── controllers
-├── routes
+├── config/
+├── controllers/
+├── routes/
 ├── db
 │   ├── database-schema.sql
 │   └── database.sql
 └── www
-    ├── images
+    ├── images/
     ├── index.html
-    ├── pages
-    ├── scripts
-    └── styles
+    ├── pages/
+    ├── scripts/
+    └── styles/
 ```
