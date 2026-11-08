@@ -10,7 +10,7 @@ const bcrypt = require("bcrypt");
 async function getAllUsers(req, res) {
     try {
         const [user] = await database.execute(
-            "SELECT user_id, user_email, user_nome, user_sobrenome, login_count, user_fav_musica FROM user"
+            "SELECT user_id, user_email, user_nome, user_sobrenome, login_count, user_fav_musica FROM users"
         );
 
         return res.status(200).json(user);
@@ -24,8 +24,8 @@ async function getUserRanking(req, res) {
     try {
         const [ranking] = await database.execute(
             `SELECT u.user_id, u.user_nome, u.user_sobrenome, COUNT(m.musica_id) AS music_count
-             FROM user u
-             LEFT JOIN musicas m ON m.user_id = u.user_id
+             FROM users u
+             LEFT JOIN discs m ON m.user_id = u.user_id
              GROUP BY u.user_id, u.user_nome, u.user_sobrenome
              ORDER BY music_count DESC, u.user_nome ASC
              LIMIT 10`
@@ -50,8 +50,8 @@ async function getProfile(req, res) {
             `SELECT u.user_id, u.user_email, u.user_nome, u.user_sobrenome, u.login_count,
                     u.user_fav_musica, m.musica_nome AS favorite_song_name,
                     m.musica_artista AS favorite_song_artist, m.musica_capa AS favorite_song_cover
-             FROM user u
-             LEFT JOIN musicas m ON m.musica_id = u.user_fav_musica
+             FROM users u
+             LEFT JOIN discs m ON m.musica_id = u.user_fav_musica
              WHERE u.user_id = ?`,
             [userId]
         );
@@ -80,9 +80,9 @@ async function getPublicProfile(req, res) {
                     f.musica_nome AS favorite_song_name, f.musica_artista AS favorite_song_artist,
                     f.musica_capa AS favorite_song_cover,
                     COUNT(m.musica_id) AS music_count
-             FROM user u
-             LEFT JOIN musicas m ON m.user_id = u.user_id
-             LEFT JOIN musicas f ON f.musica_id = u.user_fav_musica
+             FROM users u
+             LEFT JOIN discs m ON m.user_id = u.user_id
+             LEFT JOIN discs f ON f.musica_id = u.user_fav_musica
              WHERE u.user_id = ?
              GROUP BY u.user_id, u.user_nome, u.user_sobrenome, u.user_fav_musica,
                       f.musica_nome, f.musica_artista, f.musica_capa`,
@@ -113,12 +113,12 @@ async function setFavorite(req, res) {
     }
 
     try {
-        const [discs] = await database.execute("SELECT musica_id FROM musicas WHERE musica_id = ?", [discId]);
+        const [discs] = await database.execute("SELECT musica_id FROM discs WHERE musica_id = ?", [discId]);
         if (discs.length === 0) {
             return res.status(404).json({ error: "Música não encontrada." });
         }
 
-        await database.execute("UPDATE user SET user_fav_musica = ? WHERE user_id = ?", [discId, userId]);
+        await database.execute("UPDATE users SET user_fav_musica = ? WHERE user_id = ?", [discId, userId]);
         return res.status(200).json({ message: "Música adicionada aos favoritos.", favoriteSongId: discId });
     } catch (error) {
         console.error("Erro ao guardar favorito:", error);
@@ -134,7 +134,7 @@ async function clearFavorite(req, res) {
     }
 
     try {
-        await database.execute("UPDATE user SET user_fav_musica = NULL WHERE user_id = ?", [userId]);
+        await database.execute("UPDATE users SET user_fav_musica = NULL WHERE user_id = ?", [userId]);
         return res.status(200).json({ message: "Favorito removido." });
     } catch (error) {
         console.error("Erro ao remover favorito:", error);
@@ -172,7 +172,7 @@ async function updateProfile(req, res) {
     try {
         const hashedPassword = await bcrypt.hash(password, 12);
         const [result] = await database.execute(
-            "UPDATE user SET user_email = ?, user_password = ?, user_nome = ?, user_sobrenome = ? WHERE user_id = ?",
+            "UPDATE users SET user_email = ?, user_password = ?, user_nome = ?, user_sobrenome = ? WHERE user_id = ?",
             [cleanEmail, hashedPassword, cleanFirstName, cleanLastName, userId]
         );
 
@@ -219,7 +219,7 @@ async function patchProfile(req, res) {
     try {
         const updateValue = field === "password" ? await bcrypt.hash(value, 12) : value;
         const [result] = await database.execute(
-            `UPDATE user SET ${dbColumn} = ? WHERE user_id = ?`,
+            `UPDATE users SET ${dbColumn} = ? WHERE user_id = ?`,
             [updateValue, userId]
         );
 
@@ -243,7 +243,7 @@ async function deleteProfile(req, res) {
 
     try {
         const [result] = await database.execute(
-            "DELETE FROM user WHERE user_id = ?",
+            "DELETE FROM users WHERE user_id = ?",
             [userId]
         );
 

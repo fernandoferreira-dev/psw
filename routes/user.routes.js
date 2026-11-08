@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAllUsers, getUserRanking, getProfile, getPublicProfile, setFavorite, clearFavorite, updateProfile, patchProfile, deleteProfile } = require("../controllers/user.controller");
+const { getAllUsers, getUserRanking, getProfile, getPublicProfile, setFavorite, clearFavorite, updateProfile, patchProfile, deleteProfile } = require("../controllers/users.controller");
 
 router.get("/", getAllUsers)
 router.get("/ranking", getUserRanking)

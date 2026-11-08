@@ -7,7 +7,7 @@ const database = mysql.createPool(options.database);
 async function getAllDiscs(req, res) {
     try {
         const [discs] = await database.execute(
-            "SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa FROM musicas"
+            "SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa FROM discs"
         );
 
         return res.status(200).json(discs);
@@ -25,8 +25,8 @@ async function getRandomDiscs(req, res) {
         const [discs] = await database.query(
             `SELECT m.musica_id, m.musica_nome, m.musica_artista, m.musica_album,
                     m.musica_data_lancamento, m.musica_capa, m.user_id, u.user_nome, u.user_sobrenome
-             FROM musicas m
-             LEFT JOIN user u ON m.user_id = u.user_id
+             FROM discs m
+             LEFT JOIN users u ON m.user_id = u.user_id
              ORDER BY RAND()
              LIMIT ${limit}`
         );
@@ -48,7 +48,7 @@ async function getMyDiscs(req, res) {
     try {
         const [discs] = await database.execute(
             `SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa
-             FROM musicas
+             FROM discs
              WHERE user_id = ?
              ORDER BY musica_nome ASC`,
             [userId]
@@ -71,7 +71,7 @@ async function getDiscsByUser(req, res) {
     try {
         const [discs] = await database.execute(
             `SELECT musica_id, musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa, user_id
-             FROM musicas
+             FROM discs
              WHERE user_id = ?
              ORDER BY musica_nome ASC`,
             [userId]
@@ -103,8 +103,8 @@ async function searchDiscs(req, res) {
                     u.user_id,
                     u.user_nome,
                     u.user_sobrenome
-                FROM musicas m
-                LEFT JOIN user u ON m.user_id = u.user_id
+                FROM discs m
+                LEFT JOIN users u ON m.user_id = u.user_id
             `;
 
         const conditions = [];
@@ -145,8 +145,8 @@ async function getDiscById(req, res) {
         const [discs] = await database.execute(
             `SELECT m.musica_id, m.musica_nome, m.musica_artista, m.musica_album,
                     m.musica_data_lancamento, m.musica_capa, m.user_id, u.user_nome, u.user_sobrenome
-             FROM musicas m
-             LEFT JOIN user u ON m.user_id = u.user_id
+             FROM discs m
+             LEFT JOIN users u ON m.user_id = u.user_id
              WHERE m.musica_id = ?`,
             [discId]
         );
@@ -175,7 +175,7 @@ async function createDisc(req, res) {
 
     try {
         const [insertResult] = await database.execute(
-            "INSERT INTO musicas (musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO discs (musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa) VALUES (?, ?, ?, ?, ?)",
             [cleanTitle, cleanArtist, cleanAlbum, releaseDate || null, cover?.trim() || null]
         );
 
@@ -203,7 +203,7 @@ async function createMyDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            `INSERT INTO musicas
+            `INSERT INTO discs
              (musica_nome, musica_artista, musica_album, musica_data_lancamento, musica_capa, user_id)
              VALUES (?, ?, ?, ?, ?, ?)`,
             [title.trim(), artist.trim(), album?.trim() || "Single", releaseDate, cover?.trim() || null, userId]
@@ -230,7 +230,7 @@ async function updateDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            "UPDATE musicas SET musica_nome = ?, musica_artista = ?, musica_album = ?, musica_data_lancamento = ?, musica_capa = ? WHERE musica_id = ?",
+            "UPDATE discs SET musica_nome = ?, musica_artista = ?, musica_album = ?, musica_data_lancamento = ?, musica_capa = ? WHERE musica_id = ?",
             [title.trim(), artist.trim(), album ? album.trim() : null, releaseDate || null, cover?.trim() || null, discId]
         );
 
@@ -264,7 +264,7 @@ async function updateMyDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            `UPDATE musicas
+            `UPDATE discs
              SET musica_nome = ?, musica_artista = ?, musica_album = ?, musica_data_lancamento = ?, musica_capa = ?
              WHERE musica_id = ? AND user_id = ?`,
             [title.trim(), artist.trim(), album?.trim() || "Single", releaseDate || null, cover?.trim() || null, discId, userId]
@@ -295,7 +295,7 @@ async function deleteMyDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            "DELETE FROM musicas WHERE musica_id = ? AND user_id = ?",
+            "DELETE FROM discs WHERE musica_id = ? AND user_id = ?",
             [discId, userId]
         );
 
@@ -332,7 +332,7 @@ async function patchDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            `UPDATE musicas SET ${dbColumn} = ? WHERE musica_id = ?`,
+            `UPDATE discs SET ${dbColumn} = ? WHERE musica_id = ?`,
             [value !== undefined ? value : null, discId]
         );
 
@@ -356,7 +356,7 @@ async function deleteDisc(req, res) {
 
     try {
         const [result] = await database.execute(
-            "DELETE FROM musicas WHERE musica_id = ?",
+            "DELETE FROM discs WHERE musica_id = ?",
             [discId]
         );
 

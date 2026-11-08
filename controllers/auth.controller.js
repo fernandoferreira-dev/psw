@@ -32,7 +32,7 @@ async function register(req, res) {
 
     try {
         const [existingUsers] = await database.execute(
-            "SELECT user_id FROM user WHERE user_email = ?",
+            "SELECT user_id FROM users WHERE user_email = ?",
             [cleanEmail]
         );
 
@@ -43,7 +43,7 @@ async function register(req, res) {
         const hashPassword = await bcrypt.hash(password, 12);
 
         const [insertResult] = await database.execute(
-            "INSERT INTO user (user_email, user_password, user_nome, user_sobrenome) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (user_email, user_password, user_nome, user_sobrenome) VALUES (?, ?, ?, ?)",
             [cleanEmail, hashPassword, cleanFirstName, cleanLastName]
         );
 
@@ -74,7 +74,7 @@ async function login(req, res) {
 
     try {
         const [users] = await database.execute(
-            "SELECT user_id, user_password FROM user WHERE user_email = ?",
+            "SELECT user_id, user_password FROM users WHERE user_email = ?",
             [cleanEmail]
         );
 

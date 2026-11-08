@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS psw;
 USE psw;
 
-CREATE TABLE musicas (
+CREATE TABLE discs (
     musica_id INT PRIMARY KEY AUTO_INCREMENT,
     musica_nome VARCHAR(255) NOT NULL,
     musica_artista VARCHAR(255) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE musicas (
     user_id INT
 );
 
-CREATE TABLE user (
+CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     user_email VARCHAR(255) NOT NULL UNIQUE,
     user_password VARCHAR(255) NOT NULL,
@@ -19,9 +19,9 @@ CREATE TABLE user (
     user_sobrenome VARCHAR(30) NOT NULL,
     login_count INT NOT NULL DEFAULT 0,
     user_fav_musica INT DEFAULT NULL,
-    FOREIGN KEY (user_fav_musica) REFERENCES musicas(musica_id) ON DELETE SET NULL
+    FOREIGN KEY (user_fav_musica) REFERENCES discs(musica_id) ON DELETE SET NULL
 );
 
-ALTER TABLE musicas 
-ADD CONSTRAINT fk_musicas_user 
-FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE;
+ALTER TABLE discs
+ADD CONSTRAINT fk_discs_user
+FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE;
