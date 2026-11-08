@@ -1,6 +1,6 @@
 # Projeto PSW
 
-´´´
+```
 ├── app.js
 ├── config
 ├── controllers
@@ -17,4 +17,4 @@
     ├── pages
     ├── scripts
     └── styles
-´´´
+```
