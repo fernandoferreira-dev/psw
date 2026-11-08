@@ -11,8 +11,8 @@
 │   ├── database-schema.sql
 │   └── database.sql
 └── www
-    ├── images/
     ├── index.html
+    ├── images/
     ├── pages/
     ├── scripts/
     └── styles/
