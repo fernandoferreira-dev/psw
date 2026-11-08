@@ -2,15 +2,14 @@
 
 ```
 ├── app.js
+├── package.json
+├── package-lock.json
 ├── config
 ├── controllers
+├── routes
 ├── db
 │   ├── database-schema.sql
 │   └── database.sql
-├── package.json
-├── package-lock.json
-├── routes
-├── tree.txt
 └── www
     ├── images
     ├── index.html
