@@ -7,6 +7,13 @@ const emailRegEx = new RegExp(options.RegEx.email);
 const nameRegEx = new RegExp(options.RegEx.names);
 const bcrypt = require("bcrypt");
 
+function destroySession(session) {
+    // Converte o callback da sessão para poder usar await.
+    return new Promise((resolve, reject) => {
+        session.destroy((error) => error ? reject(error) : resolve());
+    });
+}
+
 async function getAllUsers(req, res) {
     try {
         const [user] = await database.execute(
@@ -22,6 +29,7 @@ async function getAllUsers(req, res) {
 
 async function getUserRanking(req, res) {
     try {
+        // Conta os discos de cada utilizador e ordena os dez primeiros.
         const [ranking] = await database.execute(
             `SELECT u.user_id, u.user_nome, u.user_sobrenome, COUNT(m.musica_id) AS music_count
              FROM users u
@@ -75,6 +83,7 @@ async function getPublicProfile(req, res) {
     }
 
     try {
+        // Junta os dados do utilizador, o favorito e a quantidade de discos.
         const [users] = await database.execute(
             `SELECT u.user_id, u.user_nome, u.user_sobrenome, u.user_fav_musica,
                     f.musica_nome AS favorite_song_name, f.musica_artista AS favorite_song_artist,
@@ -195,6 +204,7 @@ async function patchProfile(req, res) {
         return res.status(401).json({ error: "Sessão não iniciada." });
     }
 
+    // Só estes campos podem ser alterados através desta rota.
     const allowedFields = {
         email: "user_email",
         password: "user_password",
@@ -251,18 +261,16 @@ async function deleteProfile(req, res) {
             return res.status(404).json({ error: "Utilizador não encontrado." });
         }
 
-        return new Promise((resolve) => {
-            req.session.destroy((err) => {
-                if (err) {
-                    console.error("Erro ao apagar sessão pós-eliminação:", err);
-                    resolve(res.status(500).json({ error: "Conta apagada, mas ocorreu um erro ao destruir a sessão." }));
-                    return;
-                }
+        // A conta é apagada antes de terminar a sessão.
+        try {
+            await destroySession(req.session);
+        } catch (error) {
+            console.error("Erro ao apagar sessão pós-eliminação:", error);
+            return res.status(500).json({ error: "Conta apagada, mas ocorreu um erro ao destruir a sessão." });
+        }
 
-                res.clearCookie("connect.sid");
-                resolve(res.status(200).json({ message: "Conta eliminada e sessão encerrada com sucesso." }));
-            });
-        });
+        res.clearCookie("connect.sid");
+        return res.status(200).json({ message: "Conta eliminada e sessão encerrada com sucesso." });
 
     } catch (error) {
         console.error("Erro ao apagar utilizador:", error);

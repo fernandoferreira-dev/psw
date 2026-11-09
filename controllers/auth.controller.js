@@ -14,6 +14,7 @@ async function register(req, res) {
         return res.status(400).json({ error: "É necessário preencher todos os dados." });
     }
 
+    // Guarda o email sempre no mesmo formato.
     const cleanEmail = email.trim().toLowerCase();
     if (!emailRegEx.test(cleanEmail)) {
         return res.status(400).json({ error: "Endereço de email inválido." });
@@ -40,6 +41,7 @@ async function register(req, res) {
             return res.status(401).json({ error: "Utilizador já existente." });
         }
 
+        // A palavra-passe nunca é guardada diretamente na base de dados.
         const hashPassword = await bcrypt.hash(password, 12);
 
         const [insertResult] = await database.execute(
@@ -69,7 +71,7 @@ async function login(req, res) {
     }
 
     if (typeof password !== "string" || password.length === 0 || password.length > 128) {
-        return res.status(400).json({ error: "Credenciais inválidas. 1" });
+        return res.status(400).json({ error: "Credenciais inválidas." });
     }
 
     try {
@@ -79,15 +81,16 @@ async function login(req, res) {
         );
 
         if (users.length === 0) {
-            return res.status(401).json({ error: "Credenciais inválidas. 2" });
+            return res.status(401).json({ error: "Credenciais inválidas." });
         }
 
         const activeUser = users[0];
 
+        // Compara a palavra-passe recebida com o hash guardado.
         const isMatch = await bcrypt.compare(password, activeUser.user_password);
 
         if (!isMatch) {
-            return res.status(401).json({ error: "Credenciais inválidas. 3" });
+            return res.status(401).json({ error: "Credenciais inválidas." });
         }
 
         req.session.userId = activeUser.user_id;
@@ -100,6 +103,7 @@ async function login(req, res) {
 }
 
 function logout(req, res) {
+    // Remove a sessão antes de apagar o cookie do browser.
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({ error: "Erro ao encerrar a sessão." });

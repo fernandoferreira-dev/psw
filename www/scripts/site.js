@@ -1,6 +1,4 @@
-// Elemento onde o header comum das páginas vai ser inserido.
 const headerContainer = document.querySelector("#site-header");
-// Identifica a página atual para marcar o link de navegação ativo.
 const pageName = document.body.dataset.page;
 const COVER_PLACEHOLDER = "/images/album-cover-placeholder.svg";
 
@@ -43,10 +41,8 @@ function renderPublicFavorite(user) {
 
 // Centraliza o parsing das respostas e transforma erros da API em mensagens visíveis.
 async function requestJson(url, options) {
-    // Todas as chamadas da API passam por esta função para evitar código repetido.
     const response = await fetch(url, options);
     const result = await response.json();
-    // Uma resposta diferente de 2xx é apresentada como um erro normal da aplicação.
     if (!response.ok) throw new Error(result.error || "Não foi possível concluir o pedido.");
     return result;
 }
@@ -56,11 +52,8 @@ async function loadHeader() {
     try {
         // A API devolve os dados do utilizador autenticado.
         const user = await requestJson("/users/me");
-        // As iniciais são usadas no avatar do header.
         const initials = `${user.user_nome[0]}${user.user_sobrenome[0]}`.toUpperCase();
-        // O mesmo header é montado nas páginas do dashboard, ranking e perfil.
         headerContainer.innerHTML = `<header class="site-header"><a class="brand" href="/index.html"><span class="brand-mark">D</span><span>Discos</span></a><nav aria-label="Navegação principal"><a class="nav-link ${pageName === "dashboard" ? "active" : ""}" href="/index.html">Descobrir</a><a class="nav-link ${pageName === "collection" ? "active" : ""}" href="/pages/collection.html">A minha coleção</a><a class="nav-link ${pageName === "ranking" ? "active" : ""}" href="/pages/ranking.html">Ranking</a></nav><div class="header-actions"><a class="profile-link ${pageName === "profile" ? "active" : ""}" href="/pages/profile.html"><span class="avatar">${initials}</span><span>${user.user_nome}</span></a><button class="logout-button" id="logout" type="button">Sair</button></div></header>`;
-        // Terminar a sessão e voltar à página de login.
         document.querySelector("#logout").addEventListener("click", async () => {
             await requestJson("/auth/logout", { method: "POST" });
             window.location.assign("/pages/login.html");
@@ -73,15 +66,12 @@ async function loadHeader() {
     }
 }
 
-// Renderiza os resultados da API sem duplicar o markup entre carregamentos e refreshes.
 function renderMusic(discs, selector = "#music-list") {
     const list = document.querySelector(selector);
-    // Mostra um estado vazio quando a base de dados ainda não tem músicas.
     list.innerHTML = discs.length ? discs.map((disc, index) => `<a class="music-card" href="/pages/disc.html?id=${disc.musica_id}" style="--delay: ${index * 70}ms"><span class="music-number">0${index + 1}</span><span class="record-art"><img class="album-cover" src="${getCoverUrl(disc)}" alt="Capa de ${disc.musica_nome}"></span><span class="music-info"><strong>${disc.musica_nome}</strong><span>${disc.musica_artista}</span><small>${disc.musica_album || "Single"}</small></span></a>`).join("") : "<p class=\"loading\">Ainda não existem músicas para mostrar.</p>";
 }
 
 async function loadMusic(endpoint = "/discs/random?limit=6") {
-    // Pede seis músicas aleatórias ao endpoint do dashboard.
     renderMusic(await requestJson(endpoint));
 }
 
@@ -103,7 +93,7 @@ async function shuffleMusic() {
 }
 
 async function loadRanking() {
-    // O servidor já devolve os utilizadores ordenados pela quantidade de músicas.
+    // O servidor já devolve os utilizadores ordenados.
     const ranking = await requestJson("/users/ranking");
     document.querySelector("#ranking-list").innerHTML = ranking.length ? ranking.map((user, index) => `<div class="ranking-row"><span class="rank-number">${String(index + 1).padStart(2, "0")}</span><div class="avatar ranking-avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div class="ranking-name"><strong>${user.user_nome} ${user.user_sobrenome}</strong><span>colecionador</span></div><strong class="music-count">${user.music_count} <small>${Number(user.music_count) === 1 ? "música" : "músicas"}</small></strong></div>`).join("") : "<p class=\"loading\">Ainda não existem utilizadores no ranking.</p>";
 }
@@ -146,12 +136,10 @@ async function loadDiscDetail(user) {
 
 async function loadUserProfile() {
     const userId = new URLSearchParams(window.location.search).get("id");
-    const [user, discs] = await Promise.all([
-        requestJson(`/users/${userId}`),
-        requestJson(`/discs/by-user/${userId}`),
-    ]);
+    const user = await requestJson(`/users/${userId}`);
+    const discs = await requestJson(`/discs/by-user/${userId}`);
 
-    document.querySelector("#public-profile").innerHTML = `<div class="public-avatar avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div><p class="label">Perfil público</p><h1>${user.user_nome} ${user.user_sobrenome}</h1><p class="lead">${user.music_count} ${Number(user.music_count) === 1 ? "disco adicionado" : "discos adicionados"} à comunidade.</p>${renderPublicFavorite(user)}</div>`;
+    document.querySelector("#public-profile").innerHTML = `<div class="public-avatar avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div><p class="label">Perfil</p><h1>${user.user_nome} ${user.user_sobrenome}</h1><p class="lead">${user.music_count} ${Number(user.music_count) === 1 ? "disco adicionado" : "discos adicionados"} à comunidade.</p>${renderPublicFavorite(user)}</div>`;
     renderMusic(discs, "#user-discs");
 }
 
@@ -231,7 +219,6 @@ async function loadCollection() {
 
 }
 
-// Preenche o formulário com os dados atuais e envia a atualização completa do perfil.
 async function loadProfile() {
     // Carrega os valores atuais para o utilizador os poder editar.
     const user = await requestJson("/users/me");
@@ -247,7 +234,6 @@ async function loadProfile() {
         button.disabled = true;
         message.textContent = "A guardar...";
         try {
-            // FormData converte os campos do formulário num objeto enviado em JSON.
             await requestJson("/users/me", formRequest("PUT", event.currentTarget));
             message.textContent = "Perfil atualizado com sucesso.";
             document.querySelector("#password").value = "";
@@ -255,8 +241,7 @@ async function loadProfile() {
     });
 }
 
-// Apenas a página ativa faz o seu pedido específico; todas partilham a validação do header.
-(async () => {
+async function initializePage() {
     const user = await loadHeader();
     if (!user) return;
     try {
@@ -275,4 +260,6 @@ async function loadProfile() {
         if (pageName === "ranking") await loadRanking();
         if (pageName === "profile") await loadProfile();
     } catch (error) { const target = document.querySelector(".loading, .form-message"); if (target) target.textContent = error.message; }
-})();
+}
+
+initializePage();
