@@ -2,10 +2,12 @@ const headerContainer = document.querySelector("#site-header");
 const pageName = document.body.dataset.page;
 const COVER_PLACEHOLDER = "/images/album-cover-placeholder.svg";
 
+// Devolve a capa do disco ou uma imagem padrão quando não existe capa.
 function getCoverUrl(disc) {
     return disc.musica_capa || COVER_PLACEHOLDER;
 }
 
+// Constrói as opções de uma requisição com os dados de um formulário em JSON.
 function formRequest(method, form) {
     return {
         method,
@@ -14,6 +16,7 @@ function formRequest(method, form) {
     };
 }
 
+// Gera o HTML do disco favorito do utilizador autenticado.
 function renderFavoriteSong(user) {
     if (!user.favorite_song_name) {
         return "<p class=\"loading\">Ainda não escolheste um disco favorito.</p>";
@@ -31,6 +34,7 @@ function renderFavoriteSong(user) {
         </a>`;
 }
 
+// Gera o texto com o disco favorito visível no perfil público.
 function renderPublicFavorite(user) {
     if (!user.favorite_song_name) {
         return "<p class=\"public-favorite\">Ainda não escolheu um favorito.</p>";
@@ -66,15 +70,18 @@ async function loadHeader() {
     }
 }
 
+// Renderiza uma lista de discos no elemento indicado.
 function renderMusic(discs, selector = "#music-list") {
     const list = document.querySelector(selector);
     list.innerHTML = discs.length ? discs.map((disc, index) => `<a class="music-card" href="/pages/disc.html?id=${disc.musica_id}" style="--delay: ${index * 70}ms"><span class="music-number">0${index + 1}</span><span class="record-art"><img class="album-cover" src="${getCoverUrl(disc)}" alt="Capa de ${disc.musica_nome}"></span><span class="music-info"><strong>${disc.musica_nome}</strong><span>${disc.musica_artista}</span><small>${disc.musica_album || "Single"}</small></span></a>`).join("") : "<p class=\"loading\">Ainda não existem músicas para mostrar.</p>";
 }
 
+// Obtém discos de um endpoint e mostra-os na lista de músicas.
 async function loadMusic(endpoint = "/discs/random?limit=6") {
     renderMusic(await requestJson(endpoint));
 }
 
+// Solicita uma nova seleção aleatória de discos e atualiza o estado do botão.
 async function shuffleMusic() {
     const button = document.querySelector("#refresh-music");
     const list = document.querySelector("#music-list");
@@ -92,12 +99,14 @@ async function shuffleMusic() {
     }
 }
 
+// Obtém o ranking e apresenta os utilizadores na ordem enviada pelo servidor.
 async function loadRanking() {
     // O servidor já devolve os utilizadores ordenados.
     const ranking = await requestJson("/users/ranking");
     document.querySelector("#ranking-list").innerHTML = ranking.length ? ranking.map((user, index) => `<div class="ranking-row"><span class="rank-number">${String(index + 1).padStart(2, "0")}</span><div class="avatar ranking-avatar">${user.user_nome[0]}${user.user_sobrenome[0]}</div><div class="ranking-name"><strong>${user.user_nome} ${user.user_sobrenome}</strong><span>colecionador</span></div><strong class="music-count">${user.music_count} <small>${Number(user.music_count) === 1 ? "música" : "músicas"}</small></strong></div>`).join("") : "<p class=\"loading\">Ainda não existem utilizadores no ranking.</p>";
 }
 
+// Carrega os detalhes de um disco e configura a ação de favorito.
 async function loadDiscDetail(user) {
     const discId = new URLSearchParams(window.location.search).get("id");
     const detail = document.querySelector("#disc-detail");
@@ -134,6 +143,7 @@ async function loadDiscDetail(user) {
     });
 }
 
+// Carrega um perfil público e os discos associados ao utilizador.
 async function loadUserProfile() {
     const userId = new URLSearchParams(window.location.search).get("id");
     const user = await requestJson(`/users/${userId}`);
@@ -143,6 +153,7 @@ async function loadUserProfile() {
     renderMusic(discs, "#user-discs");
 }
 
+// Carrega a coleção pessoal e configura adicionar, editar e remover discos.
 async function loadCollection() {
     const discs = await requestJson("/discs/mine");
     const list = document.querySelector("#collection-list");
@@ -219,13 +230,14 @@ async function loadCollection() {
 
 }
 
+// Carrega os dados do perfil autenticado e configura a edição do perfil.
 async function loadProfile() {
     // Carrega os valores atuais para o utilizador os poder editar.
     const user = await requestJson("/users/me");
     document.querySelector("#first-name").value = user.user_nome;
     document.querySelector("#last-name").value = user.user_sobrenome;
     document.querySelector("#email").value = user.user_email;
-    document.querySelector("#favorite-song").innerHTML = renderFavoriteSong(user);
+    document.querySelector("#favorite-song").innerHTML = renderFavoriteSong(user); 2
     document.querySelector("#profile-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         // Bloqueia o botão durante o pedido para evitar envios duplicados.
@@ -241,6 +253,7 @@ async function loadProfile() {
     });
 }
 
+// Inicializa o header e executa apenas o carregamento correspondente à página atual.
 async function initializePage() {
     const user = await loadHeader();
     if (!user) return;
